@@ -1,0 +1,142 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <TITLE>NetStreamer - How to start it?</TITLE>
+<LINK REL="Stylesheet" HREF="NetStreamer.css" TYPE="text/css">
+<LINK REL="Made" HREF="mailto:dirk-jan@flits102-126.flits.rug.nl">
+</HEAD>
+<BODY>
+
+<CENTER><IMG SRC="logo.gif" ALT="NetStreamer Logo" HEIGHT=53 WIDTH=248></CENTER>
+
+<TABLE WIDTH="100%" >
+<TR>
+<TD VALIGN=TOP WIDTH="190" HEIGHT="250" CLASS="Menu"><IMG SRC="contents.gif" ALT="Contents:" HEIGHT=25 WIDTH=176>
+<UL><A HREF="NetStreamer.html" CLASS="Menu">What is it?</A>
+<BR><A HREF="copying.shtml" CLASS="Menu">Copying</A>
+<BR><A HREF="software.shtml" CLASS="Menu">Software</A>
+<BR><A HREF="download.shtml" CLASS="Menu">Download</A>
+<BR>How to start it?
+<BR><A HREF="mailinglist.shtml" CLASS="Menu">Mailinglist</A>
+<BR><A HREF="stations.shtml" CLASS="Menu">Stations</A>
+<BR><A HREF="win32.shtml" CLASS="Menu">Win32 Client</A>
+<BR><A HREF="credits.shtml" CLASS="Menu">Credits</A>
+<BR><A HREF="history.shtml" CLASS="Menu">History</A>
+</UL>
+</TD>
+<TD VALIGN=TOP>
+<TABLE WIDTH="100%" >
+<TR>
+<TH>How to start it?</TH>
+</TR>
+
+<TR>
+<TD>Every NetStreamer program has a parameter that specifies to which IP-Address
+(or IP-number) &amp; Port to listen to or connect to.
+
+<P>It's like this:
+<UL><TT>flits102-126.flits.rug.nl:8888</TT></UL>
+or
+<UL><TT>129.125.102.126:8888</TT></UL>
+This specifies the host <TT>flits102-126.flits.rug.nl</TT>, port <TT>8888</TT>.
+
+<P>When you specify only <TT>:8888</TT>, this means port <TT>8888</TT>
+on local address(es).
+<TABLE WIDTH="100%" >
+<TR>
+<TH>Starting the Server</TH>
+</TR>
+</TABLE>
+Port <TT>8888</TT> is the default NetStreamer port, and there is a Server
+running on <TT>flits102-126.flits.rug.nl</TT>, so you might try to telnet
+to it. See the file <TT>COMMANDS</TT> for the commands the server understands
+when you connect to it. The Server has only this <TT>address:port</TT>
+parameter. So you can start the server by entering:
+<UL><TT>NrServer :8888</TT></UL>
+or
+<UL><TT>NrServer localhost:8888</TT></UL>
+Your machine is now ready to accept NetStreamer connections. For an example
+you can look at the <TT>DemoServer</TT> script.
+<TABLE WIDTH="100%" >
+<TR>
+<TH>Starting the transmitter</TH>
+</TR>
+</TABLE>
+You can start the Transmitter by entering:
+<UL><TT>NrTransmitter Device 16 995 "Station 1" flits102-126.flits.rug.nl:8888</TT></UL>
+or
+<UL><TT>NrTransmitter Device 16 995 "Station 1" :8888</TT></UL>
+This means that the transmitter will transmit a 16 kHz stream, claim 99.5
+MHz, being labeled <TT>Station 1</TT>, and it will connect to the specified
+server. The label is passed to the receiver when it tunes in on 99.5 MHz.
+
+<P>You can als let the transmitter playback prerecorded "tapes". Those
+are files with the ".tape" extension that contain <TT>CCITT_ADPCM</TT>
+compressed data. They can be recorded by using the record button on the
+Frontend. The way to playback them is like this:
+<UL><TT>NrTransmitter Direcory 8 995 "Station 1" flits102-126.flits.rug.nl:8888
+/mnt/tape</TT></UL>
+This makes the transmitter play tape files in the directory <TT>/mnt/tape</TT>
+in random order, at 8 kHz. The filenames of the tapefiles should be chosen
+carefully. The filename without the extension <TT>.tape</TT> of every transmitted
+file will be transmitted and displayed by the NrRecFrontend receiver.
+
+<P>A good suggestion for choosing your filenames would be: "<TT><I>Artist</I>:
+<I>Composition</I>.tape</TT>", e.g. "<TT>Michael Jackson: Billy Jean.tape</TT>".
+
+<P>Another option is to make the transmitter accept an audio stream on
+standard input, e.g. from an mp3 player, like this:
+<UL><TT>mpg123 -s test.mp3 | NrTransmitter StdIn 16 995 "Station 1" flits102-126.flits.rug.nl:8888
+44</TT></UL>
+This makes the mpeg player <TT>mpg123</TT> play the file test.mp3 and pass
+it on to NrTransmitter. NrTransmitter assumes a sample-rate of 44 kHz for
+the input, and converts it to a samplerate of 16 kHz.
+
+<P>For examples you can look at the <TT>DemoTransmitter</TT> script.
+<TABLE WIDTH="100%" >
+<TR>
+<TH>Starting the receiver:</TH>
+</TR>
+</TABLE>
+The Receiver can be started by entering:
+<UL><TT>NrReceiver 995 flits102-126.flits.rug.nl:8888</TT></UL>
+This means that you want to tune in on 99.5 MHz, after connecting to the
+specified server. The X-Window receiver can be started by entering:
+<UL><TT>NrRecFrontend flits102-126.flits.rug.nl:8888</TT></UL>
+You only specify where to connect, because it has a button to tune into
+any frequency you like.
+
+<P>With the <TT>NrRecFrontend</TT> program you can record what you receive,
+by pushing the <TT>RECORD</TT> button. If you do so a file <TT>default.tape</TT>
+will be written to the current directory. If the file already exists, new
+recordings will be appended. This kind of file can be played by the transmitter
+in the way described.
+
+<P>For examples you can look at the <TT>DemoReceiver</TT> and the <TT>DemoFrontend</TT>
+scripts.
+<TABLE WIDTH="100%" >
+<TR>
+<TH WIDTH="20%">Starting the Encoder</TH>
+</TR>
+</TABLE>
+The Encoder can be started by entering:
+<UL><TT>NrEncoder 44 16 &lt; music.pcm > music.tape</TT></UL>
+The Encoder will now convert a 44 kHz PCM file <TT>music.pcm</TT> to a
+16 kHz .tape file <TT>music.tape</TT>.
+
+<P>For an example you can look at the <TT>DemoEncoder</TT> script. It converts
+<TT>.mp3</TT> files to <TT>.tape</TT> files.</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+
+<HR NOSHADE>
+
+<ADDRESS>
+<!--#include virtual="subtitle.html"-->
+</ADDRESS>
+
+</BODY>
+</HTML>

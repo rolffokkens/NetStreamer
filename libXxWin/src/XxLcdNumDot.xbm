@@ -1,0 +1,4 @@
+#define XxLcdNumDot_width 3
+#define XxLcdNumDot_height 3
+static char XxLcdNumDot_bits[] = {
+ 0x06,0x07,0x07};

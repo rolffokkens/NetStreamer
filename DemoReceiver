@@ -1,0 +1,23 @@
+#/bin/sh
+
+#
+# Fill in here the Server address and the server port
+# For the time being I think port 8888 will be the NetStreamer default port..
+#
+
+ADDR=flits102-126.flits.rug.nl
+PORT=8888
+
+#
+# This are the pseudo frequency you want to tune into
+#
+FREQ=885
+
+#
+# enable only one of the following lines
+#
+# the first is for live streaming from the /dev/audio device
+# the second is for streaming *.tape files
+#
+
+./NrReceiver ${FREQ} ${ADDR}:${PORT}

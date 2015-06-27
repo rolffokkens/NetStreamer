@@ -1,0 +1,76 @@
+This is a selection from the NetRadio Server (NrServer) command set:
+
+MODE_RECEIVER
+    This puts your connection into receiver mode.
+
+MODE_TRANSMITTER Freq Label
+    This puts your connection into transmitter mode. Freq is a number between
+    880 and 1080 meaning 88.0 MHz en 108.0 MHz, which are Dutch FM Radio lower
+    and upper frequencies. The Label could be anything like Radio 3. This 
+    label is sent to the receiver when it tunes in on the transmitter's 
+    frequency. Example:
+
+        MODE_TRANSMITTER 918 Radio 3
+
+LIST_RECEIVER
+    This lists all Receivers currently connected to the server.
+
+LIST_TRANSMITTER
+    This lists all Transmitters currently connected to the server.
+
+TO_ALL
+    This passes a message to all connections to the server, example:
+
+        TO_ALL Hi All!
+
+    Well, see for yourself!
+
+TO_RECEIVER
+    This is like TO_ALL, limited to all receiver connections. It can be used
+    for RDS like applications.
+
+TO_TRANSMITTER
+    This is another variation limited to all transmitter connections.
+
+TO_TUNED
+    This variation is for transmitters only. It passes a message to all
+    tuned receivers.
+
+The next commands are receiver commands:
+
+TUNE
+    This makes the receiver tune in on a specified frequence, example:
+
+        TUNE 918
+
+    The Server replies wether or not you receive a signal.
+
+TUNE_UP
+    This makes the receiver tune up from a specified frequence, example:
+
+        TUNE_UP 918
+
+    The Server tunes up in steps of 1 (0.1 MHz) Showing for each frequency
+    if there's a signal. It stops searching when a frequency with a signal
+    is found.
+
+TUNE_DOWN
+    This makes the receiver tune down from a specified frequence, like TUNE_UP.
+
+MUTE_ON
+    This makes the receiver stop passing audio data, which is the default. This
+    reduces the network-load. If there are no receivers listening on a 
+    frequency the responsible transmitter is passed the MUTE_ON command too.
+
+MUTE_OFF
+    This is the opposite of MUTE_ON.
+
+QUIT
+    This makes the server terminate the connection.
+
+The next is a transmitter command:
+
+PING
+    It is the reply to a PING from the server. The server sends a ping every
+    5 seconds. If a transmitter hasn't sent a ping for 30 seconds, it's
+    disconnected.

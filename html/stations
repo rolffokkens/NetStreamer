@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+
+# Program : stations
+# Author  : D. Faber (dirk-jan@flits102-126.flits.rug.nl)
+# Date    : 24 june 1998
+# Usage   : stations host port [html]
+# Example : stations flits102-126.flits.rug.nl 8888 html 
+# stations is connecting to a NrServer and is showing which
+# stations are currently broadcasting and their frequentie.
+# When given the 'html' argument it will generate a table
+# in html. You can use it in an shtml program, using the code:
+# <!--#exec cmd="stations 129.125.102.126 8888 html"-->
+
+if (@ARGV < 2) {
+  die "usage: stations hostname port [html]";
+}
+
+$hostname = $ARGV[0];
+$port     = $ARGV[1];
+
+use Net::Telnet ();
+
+$NetStreamer = new Net::Telnet (Telnetmode => 0);
+$NetStreamer->open(Host => $hostname,
+                   Port => $port);
+
+## Read the server information
+$server = $NetStreamer->getline;
+
+## Read the transmitting channels
+$NetStreamer->print("list_transmitter\n\n");
+($_) = $NetStreamer->waitfor('/bad_command/i');
+
+@info = split(/\n/, $_);
+
+if ($ARGV[2] eq "html") {
+print <<HEAD;
+<TABLE WIDTH=100%>
+<TR><TH>Host</TH>
+    <TH>Port</TH>
+    <TH>Server</TH>
+</TR>
+<TR><TD>$hostname</TD>
+    <TD>$port</TD>
+    <TD>$server</TD>
+</TR>
+<TR><TH>Channel</TH>
+    <TH>Frequentie</TH>
+    <TH>Ip-adres</TH>
+</TR>
+HEAD
+
+for ($i = 0; $i <= $#info; $i++) {
+  ($_, $_, $ip, $freq, $chan) = split(/ /, $info[$i]);
+  ($ip, $_) = split(/:/, $ip);
+print <<CHANNELINFO
+<TR><TD>$chan</TD>
+    <TD>$freq</TD>
+    <TD>$ip</TD>
+</TR>
+CHANNELINFO
+}
+
+print <<INFOFOOT;
+</TABLE>
+INFOFOOT
+} else {
+print <<HEAD;
+ Host   : $hostname
+ Port   : $port
+ Server : $server
++---------------+------+-----------------+
+| Channel       | Freq | Ip-adres        |
++---------------+------+-----------------+
+HEAD
+for ($i = 0; $i <= $#info; $i++) {
+  ($_, $_, $ip, $freq, $chan) = split(/ /, $info[$i]);
+  ($ip, $_) = split(/:/, $ip);
+printf "| %-13s | %4s | %-15s |\n", $chan,$freq,$ip;
+}
+
+print "+---------------+------+-----------------+\n";
+}

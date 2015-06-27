@@ -1,0 +1,26 @@
+BODY      { color : #000000;
+            background-image: url(background.gif);
+            background-repeat: repeat;
+            font-family: Times New Roman, Times; }
+
+TD.Menu   { font-family: Times New Roman, Times;
+            font-size: 10pt;
+            color : yellow;
+            background-image: url('menu.gif');
+            background-repeat: no-repeat; }
+
+A:link    { color : #008800; }
+
+A:visited { color : #0000FF; }
+
+A.Menu:link    { color : red; }
+
+A.Menu:visited { color : green; }
+
+TH        { background-color : #008800; }
+
+PRE       { font-family: monospace; }
+
+ADDRESS   { text-align : center;
+            font-family: Times New Roman, Times; }
+

@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <TITLE>NetStreamer - Copying</TITLE>
+<LINK REL="Stylesheet" HREF="NetStreamer.css" TYPE="text/css">
+<LINK REL="Made" HREF="mailto:dirk-jan@flits102-126.flits.rug.nl">
+</HEAD>
+<BODY>
+
+<CENTER><IMG SRC="logo.gif" ALT="NetStreamer Logo" HEIGHT=53 WIDTH=248></CENTER>
+
+<TABLE WIDTH="100%" >
+
+<TR>
+
+<TD VALIGN=TOP WIDTH="190" HEIGHT="250" CLASS="Menu"><IMG SRC="contents.gif" ALT="Contents:" HEIGHT=25 WIDTH=176>
+<UL><A HREF="NetStreamer.html" CLASS="Menu">What is it?</A>
+<BR>Copying
+<BR><A HREF="software.shtml" CLASS="Menu">Software</A>
+<BR><A HREF="download.shtml" CLASS="Menu">Download</A>
+<BR><A HREF="howtostartit.shtml" CLASS="Menu">How to start it?</A>
+<BR><A HREF="mailinglist.shtml" CLASS="Menu">Mailinglist</A>
+<BR><A HREF="stations.shtml" CLASS="Menu">Stations</A>
+<BR><A HREF="win32.shtml" CLASS="Menu">Win32 Client</A>
+<BR><A HREF="credits.shtml" CLASS="Menu">Credits</A>
+<BR><A HREF="history.shtml" CLASS="Menu">History</A>
+</UL>
+</TD>
+<TD VALIGN=TOP>
+<TABLE WIDTH="100%" >
+<TR>
+<TH>Copying</TH>
+</TR>
+
+<TR>
+<TD>This software is distributed under the <A HREF="http://www.gnu.org/">GNU</A>
+General Public License - see the accompanying COPYING file for more details.
+
+<P>The audio compression in this software is realized by the package ccitt-adpcm.tar.gz,
+it's source code is released by Sun Microsystems, Inc. to the public domain.</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+
+<HR NOSHADE>
+
+<ADDRESS>
+<!--#include virtual="subtitle.html"-->
+</ADDRESS>
+
+</BODY>
+</HTML>

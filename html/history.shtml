@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <TITLE>NetStreamer - Download</TITLE>
+<LINK REL="Stylesheet" HREF="NetStreamer.css" TYPE="text/css">
+<LINK REL="Made" HREF="mailto:dirk-jan@flits102-126.flits.rug.nl">
+</HEAD>
+<BODY>
+
+<CENTER><IMG SRC="logo.gif" ALT="NetStreamer Logo" HEIGHT=53 WIDTH=248></CENTER>
+
+<TABLE WIDTH="100%" >
+<TR>
+<TD VALIGN=TOP WIDTH="190" HEIGHT="250" CLASS="Menu"><IMG SRC="contents.gif" ALT="Contents:" HEIGHT=25 WIDTH=176>
+<UL><A HREF="NetStreamer.html" CLASS="Menu">What is it?</A>
+<BR><A HREF="copying.shtml" CLASS="Menu">Copying</A>
+<BR><A HREF="software.shtml" CLASS="Menu">Software</A>
+<BR><A HREF="download.shtml" CLASS="Menu">Download</A>
+<BR><A HREF="howtostartit.shtml" CLASS="Menu">How to start it?</A>
+<BR><A HREF="mailinglist.shtml" CLASS="Menu">Mailinglist</A>
+<BR><A HREF="stations.shtml" CLASS="Menu">Stations</A>
+<BR><A HREF="win32.shtml" CLASS="Menu">Win32 Client</A>
+<BR><A HREF="credits.shtml" CLASS="Menu">Credits</A>
+<BR>History
+</UL>
+</TD>
+<TD VALIGN=TOP>
+<TABLE WIDTH="100%" >
+<TR>
+<TH>History</TH>
+</TR>
+<TR>
+
+<TD>
+<TABLE WIDTH="100%" >
+<TR>
+<TH>Rel</TH>
+<TH>When</TH>
+<TH>who</TH>
+<TH>What</TH>
+</TR>
+<TD>0.11</TD>
+<TD>980101</TD>
+<TD>Rolf</TD>
+<TD>Added Auto-Detection for 8 / 16 kHz Appeared that
+                     removing the Recording stuff almost doubles CPU usage.
+                     Strange.
+</TD>
+</TR>
+<TR>
+<TD>0.12</TD>
+<TD>980102</TD>
+<TD>Rolf</TD>
+<TD>Fixed a bug in libXxWin
+</TD>
+</TR>
+<TR>
+<TD>0.12</TD>
+<TD>980118</TD>
+<TD>Rolf</TD>
+<TD>Default are now statically linked executables
+</TD>
+</TR>
+<TR>
+<TD>0.12</TD>
+<TD>980118</TD>
+<TD>Rolf</TD>
+<TD>The Buffer now charges upto 100 % before the stream is actually played.
+</TD>
+</TR>
+<TR>
+<TD>0.12</TD>
+<TD>980124</TD>
+<TD>Rolf</TD>
+<TD>Added the option to feed the Transmitter with pipe-input
+</TD>
+</TR>
+<TR>
+<TD>0.13</TD>
+<TD>980125</TD>
+<TD>Rolf</TD>
+<TD>Implementation of the Mute Facility
+</TD>
+</TR>
+<TR>
+<TD>0.13</TD>
+<TD>980314</TD>
+<TD>Rolf</TD>
+<TD>Separation of RateAdjust from NrTransStdio, for other use...
+</TD>
+</TR>
+<TR>
+<TD>0.14</TD>
+<TD>980325</TD>
+<TD>Rolf</TD>
+<TD>Fixed "Unable to open test.inp" bug in transmitter code.
+</TD>
+</TR>
+<TR>
+<TD>0.15</TD>
+<TD>980426</TD>
+<TD>Rolf</TD>
+<TD>Added info from trans. about transmitted tape-file
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980607</TD>
+<TD>Rolf</TD>
+<TD>Started to design a Logo. I think it's needed to link The win32 release 
+to this one with a visual "token"
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980619</TD>
+<TD>Dirk-Jan</TD>
+<TD>Created fancy html pages. Much more up to date
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980620</TD>
+<TD>Rolf</TD>
+<TD>Adopted Dirk-Jan's pages, they'll replace the current ones
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980621</TD>
+<TD>Rolf</TD>
+<TD>Started to use C++ exception-handling. I made NetStreamer using C++, so 
+I'll enjoy the C++ benefits.
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980705</TD>
+<TD>Rolf</TD>
+<TD>The competitive looks of the win32 release forced me to do some cosmetic 
+changes in the frontend.
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980707</TD>
+<TD>Rolf</TD>
+<TD>Postponed the C++ gadgets.
+</TD>
+</TR>
+<TR>
+<TD>0.16</TD>
+<TD>980707</TD>
+<TD>Rolf</TD>
+<TD>Finished 0.16.
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980718</TD>
+<TD>Rolf</TD>
+<TD>Improved the stream's speed measuring, so lag on the internet has less 
+effect
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980802</TD>
+<TD>Rolf</TD>
+<TD>Fixed a bug in libXxStd, which caused core dumps with glibc2.
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980810</TD>
+<TD>Rolf</TD>
+<TD>Fixed a bug in XxTimer which caused strange behaviour with long running 
+timers when the time cycled through the "long" precision after about 49 days. 
+This caused long running NrServers to disconnect all transmitters 'cause of 
+"PING TIMEOUTs".
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980810</TD>
+<TD>Rolf</TD>
+<TD>Gave up porting NetStreamer to Linux/Alpha after discovering bugs in 
+egcs-1.0.2. I'll retry after the bugs have been fixed.
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980816</TD>
+<TD>Rolf</TD>
+<TD>Replaced the InitClass stuff by deferring the initialization of 
+library-parts until needed. This made NrRecFrontendSh stop core dumping.
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980819</TD>
+<TD>Rolf</TD>
+<TD>Got rid of some timing problems in XxBlocker which caused terrible 
+behaviour on slower hardware.
+</TD>
+</TR>
+<TR>
+<TD>0.17</TD>
+<TD>980819</TD>
+<TD>Rolf</TD>
+<TD>Finished 0.17.
+</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+
+<HR NOSHADE>
+<ADDRESS>
+<!--#include virtual="subtitle.html"-->
+
+</BODY>
+</HTML>

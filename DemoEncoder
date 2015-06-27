@@ -1,0 +1,32 @@
+#/bin/sh
+
+#
+# This script will convert an mp3 file to a tape file.
+# The first parameter is the mp3 file, the second is the tape file.
+#
+
+#
+# Fill in the tape Sample Rate: 8 or 16 kHz
+#
+
+TAPERATE=16
+
+#
+# Fill in the MP3 Sample Rate, probably 44 kHz. But with the -2 option
+# from mpg123 it'll become 22 kHz.
+#
+# The current original distribution site is for mpg123 is:
+#   http://www.sfs.nphil.uni-tuebingen.de/~hipp/mpg123.html
+#
+
+MP3RATE=22
+
+#
+# enable only one of the following lines
+#
+# the first is for live streaming from the /dev/audio device
+# the second is for streaming *.tape files, and the third for
+# streaming mp3 files.
+#
+
+mpg123 -2 -q -s "$1" | ./NrEncoder ${MP3RATE} ${TAPERATE} > "$2"

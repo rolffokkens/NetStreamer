@@ -1,0 +1,59 @@
+#/bin/sh
+
+#
+# Fill in the transmission Sample Rate: 8 or 16 kHz
+#
+
+RATE=16
+
+#
+# Fill in here the Server address and the server port
+# For the time being I think port 8888 will be the NetStreamer default port..
+#
+
+#ADDR=flits102-126.flits.rug.nl
+ADDR=linux01
+PORT=8888
+
+#
+# These are the pseudo frequency you want to transmit on and the accompanying
+# station name
+#
+FREQ=884
+STAT=Station1
+
+#
+# The TAPESDIR variable is only needed when the Transmitter transmits 
+# prerecorded files (*.tape files)
+#
+# It contains the directory where the *.tape files are stored
+#
+TAPESDIR=..
+
+#
+# The MP3FILE and the MP3RATE are the mp3 file you want to playback and the
+# sample rate it's recorded (Mostly 44.1 kHz) at.
+#
+# To use it, you'll have to download mpg123 somewhere else, and you need to
+# have an mp3 file. The file "test.mp3" is just an example
+#
+# The current original distribution site is for mpg123 is:
+#   http://www.sfs.nphil.uni-tuebingen.de/~hipp/mpg123.html
+#
+
+MP3FILE=test.mp3
+MP3RATE=44
+
+#
+# enable only one of the following lines
+#
+# the first is for live streaming from the /dev/audio device
+# the second is for streaming *.tape files, and the third for
+# streaming mp3 files.
+#
+
+#./NrTransmitter Device ${RATE} ${FREQ} ${STAT} ${ADDR}:${PORT}
+
+./NrTransmitter Directory ${RATE} ${FREQ} ${STAT} ${ADDR}:${PORT} ${TAPESDIR}
+
+# mpg123 -s ${MP3FILE} | ./NrTransmitter StdIn ${RATE} ${FREQ} ${STAT} ${ADDR}:${PORT} ${MP3RATE}

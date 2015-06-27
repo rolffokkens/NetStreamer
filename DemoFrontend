@@ -1,0 +1,11 @@
+#/bin/sh
+
+#
+# Fill in here the Server address and the server port
+# For the time being I think port 8888 will be the NetStreamer default port..
+#
+
+ADDR=flits102-126.flits.rug.nl
+PORT=8888
+
+./NrRecFrontend ${ADDR}:${PORT}

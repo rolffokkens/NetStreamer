@@ -1,0 +1,16 @@
+This document describes how NetStreamer can be built.
+
+-------------------------------------------------------------------------------
+In contrast to previous NetStreamer releases the README file from 
+NetStreamer 0.16 no longer contains the "user-documentation", this information 
+can now be found in the accompanying html documents.
+-------------------------------------------------------------------------------
+
+C++-compiler
+============
+
+From NetStreamer 0.16 you'll probably need egcs to compile the sources. This is
+because I'll start to use exceptions (one of the C++ benefits) and gcc 2.7
+doesn't officially support exception handling.
+
+Anyhow I use egcs 1.0.2. So you should probably do the same.

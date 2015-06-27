@@ -1,0 +1,14 @@
+#/bin/sh
+
+#
+# Fill in here the Server address and the server port
+# For the time being I think port 8888 will be the NetStreamer default port..
+#
+# Leaving the SERVERADDR empty for NrServer is a good option: this will allow
+# connections from all interfaces
+#
+
+ADDR=
+PORT=8888
+
+./NrServer ${ADDR}:${PORT}
