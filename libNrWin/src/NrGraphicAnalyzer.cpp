@@ -60,7 +60,7 @@ NrGraphicAnalyzer::NrGraphicAnalyzer
     NrGraphicAnalyzer::NrBands   = NrBands;
     NrGraphicAnalyzer::pAnalyzer = pAnalyzer;
 
-    BandMeters = new (XxMaxMeter *) [NrBands];
+    BandMeters = new XxMaxMeter *[NrBands];
 
     for (i = 0; i < NrBands; i++) {
         BandMeters[i]

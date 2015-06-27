@@ -9,13 +9,15 @@
  */
 
 #include <malloc.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "XxBase.h"
 #include "XxStream.h"
 #include "XxStdio.h"
 #include "NrComp.h"
 #include "NrRateAdjust.h"
+
+using namespace std;
 
 class NrEncoder;
 

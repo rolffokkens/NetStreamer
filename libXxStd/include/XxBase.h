@@ -21,9 +21,9 @@
 // class XxApplication;
 
 class XxBase {
-private:
+public:
     typedef BlSet<XxBase> XxBaseSet;
-
+private:
     static void Init (void);
 
     XxBaseSet RemoveMember;

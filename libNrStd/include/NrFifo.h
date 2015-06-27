@@ -12,7 +12,7 @@
 
 #define H_NR_FIFO
 
-#include <fstream.h>
+#include <fstream>
 
 #include "EzString.h"
 #include "NrSpeedCalc.h"

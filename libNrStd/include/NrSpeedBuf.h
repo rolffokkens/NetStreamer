@@ -14,7 +14,7 @@
 
 #define H_NR_SPEEDBUF
 
-#include <fstream.h>
+#include <fstream>
 
 #include "EzString.h"
 #include "NrMessages.h"

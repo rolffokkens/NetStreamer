@@ -91,4 +91,4 @@ inline void NrTransSoundSource::HandleInfo (EzString SoundInfo)
     pConnection->HandleInfo (SoundInfo);
 };
 
-#endif;
+#endif

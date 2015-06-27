@@ -132,4 +132,4 @@ const EzString MsgStrDisplay = EzString ("DISPLAY");
 
 // char GetSampleRate (void);
 
-#endif;
+#endif

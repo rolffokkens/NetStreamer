@@ -9,7 +9,7 @@
  */
 
 #include <malloc.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "XxSocket.h"
 #include "NrTransmitter.h"
@@ -17,6 +17,8 @@
 #include "NrTransFiles.h"
 #include "NrTransStdIn.h"
 #include "XxSoundDev.h"
+
+using namespace std;
 
 static void ShowArgErrorMessage (EzString ProgName)
 {

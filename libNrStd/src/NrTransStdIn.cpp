@@ -74,6 +74,7 @@ void NrTransStdIn::OnDisconnect (void)
     HandleError ();
 };
 
+template <>
 void NrTransStdIn::TransStdInTimer::HandleTimeOut (int Count)
 {
     pOwner->HandleTimeOut (Count);

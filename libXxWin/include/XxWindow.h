@@ -22,9 +22,9 @@
 
 class XxWindow : public XxDrawable {
     friend class XxApplication;
-private:
+public:
     typedef BlSet<XxWindow> XxWindowSet;
-
+private:
     XxWindowSet           WindowsMember;
     XxWindowSet::SetOwner Owner;
     XxWindowSet           Member;

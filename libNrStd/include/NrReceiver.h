@@ -133,6 +133,4 @@ public:
     int  SetMute      (int Flag);
 };
 
-#endif;
-
-
+#endif

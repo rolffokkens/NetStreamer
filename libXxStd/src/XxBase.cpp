@@ -9,7 +9,7 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 #include <malloc.h>
 
 #include "XxBase.h"

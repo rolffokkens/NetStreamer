@@ -63,6 +63,8 @@
 #include "NrP7.xbm"
 #include "NrP8.xbm"
 
+using namespace std;
+
 const int pButtonCount        = 8;
 
 const int RecDisplayMargin    = 10;
@@ -234,7 +236,7 @@ NrRecDisplay::NrRecDisplay
     ( EzString Name
     , XxWindow *Parent
     , int XPos, int YPos, int Width, int Height
-    , XxColor BackColor = XxGray5
+    , XxColor BackColor
     ) : XxPanel
         ( Name
         , Parent
@@ -249,10 +251,10 @@ NrRecDisplay::NrRecDisplay
 
 class NrVolMeter : public XxMeter {
 private:
-    const int BufStep   = 4;
-    const int NrSteps   = 20;
-    const int BufWidth  = NrSteps * BufStep + 1;
-    const int BufHeight = 5;
+    static const int BufStep   = 4;
+    static const int NrSteps   = 20;
+    static const int BufWidth  = NrSteps * BufStep + 1;
+    static const int BufHeight = 5;
 public:
     NrVolMeter (XxDrawable *pParent, int XPos, int YPos);
     virtual ~NrVolMeter (void);
@@ -302,10 +304,10 @@ NrVolMeter::~NrVolMeter (void)
 
 class NrBufMeter : public XxMeter {
 private:
-    const int BufStep   = 4;
-    const int NrSteps   = 20;
-    const int BufWidth  = NrSteps * BufStep + 1;
-    const int BufHeight = 5;
+    static const int BufStep   = 4;
+    static const int NrSteps   = 20;
+    static const int BufWidth  = NrSteps * BufStep + 1;
+    static const int BufHeight = 5;
 public:
     NrBufMeter (XxDrawable *pParent, int XPos, int YPos);
     virtual ~NrBufMeter (void);
@@ -367,10 +369,10 @@ NrBufMeter::~NrBufMeter (void)
 
 class NrAdjustMeter : public XxMeter {
 private:
-    const int BufStep   = 4;
-    const int NrSteps   = 20;
-    const int BufWidth  = NrSteps * BufStep + 1;
-    const int BufHeight = 5;
+    static const int BufStep   = 4;
+    static const int NrSteps   = 20;
+    static const int BufWidth  = NrSteps * BufStep + 1;
+    static const int BufHeight = 5;
 public:
     NrAdjustMeter (XxDrawable *pParent, int XPos, int YPos);
     virtual ~NrAdjustMeter (void);
@@ -1136,11 +1138,13 @@ void NrRecFrontend::VolMixer::HandleVolume (char lVolume, char rVolume)
     pParent->VolMeter.SetCurVal (lVolume);
 };
 
+template <>
 void NrRecFrontend::FrontendTimer::HandleTimeOut (int Count)
 {
     pOwner->RefreshMeters ();
 };
 
+template <>
 void NrRecFrontend::RecScrollDisplay::HandleScrollDone (void)
 {
     pOwner->HandleScrollDone ();

@@ -23,7 +23,7 @@ XxLcdNumDisplay::XxLcdNumDisplay
 
     XxLcdNumDisplay::NumDigits          = NumDigits;
     XxLcdNumDisplay::DisplayVal         = -1;
-    XxLcdNumDisplay::pDigits            = new (XxLcdNumDigit *) [NumDigits];
+    XxLcdNumDisplay::pDigits            = new XxLcdNumDigit *[NumDigits];
     XxLcdNumDisplay::EliminateZeroDigit = EliminateZeroDigit;
 
     for (i = 0; i < NumDigits; i++) {

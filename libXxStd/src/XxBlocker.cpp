@@ -26,11 +26,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "XxBlocker.h"
 #include "XxTimer.h"
 #include "XxAutoInit.h"
+
+using namespace std;
 
 static void SigPipeIgnore (void)
 {

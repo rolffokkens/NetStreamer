@@ -32,6 +32,7 @@ void NrPulseButton::OnButtonRelease (int Button, int XPos, int YPos)
     bTimer.Stop ();
 };
 
+template <>
 void NrPulseButton::NrButTimer::HandleTimeOut (int Count)
 {
     pOwner->OnPulse ();

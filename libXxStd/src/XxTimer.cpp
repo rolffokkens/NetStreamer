@@ -13,7 +13,7 @@
  *                  would recycle and maybe reach 0. Changed avery time
  *                  comparision to cope with recycling times.
  */
-#include <iostream.h>
+#include <iostream>
 #include <netdb.h>
 #include <fcntl.h>
 #include <errno.h>

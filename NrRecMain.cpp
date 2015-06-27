@@ -9,11 +9,13 @@
  */
 
 #include <malloc.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "XxSocket.h"
 #include "NrReceiver.h"
 #include "XxSoundDev.h"
+
+using namespace std;
 
 static void ShowArgErrorMessage (EzString ProgName)
 {

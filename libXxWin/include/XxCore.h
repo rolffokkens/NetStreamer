@@ -29,9 +29,9 @@ class XxCore : public virtual XxBase {
     friend XxDrawable;
     friend XxFont;
     friend XxColor;
-private:
+public:
     typedef BlSet<XxCore> XxCoreSet;
-
+private:
     XxCoreSet PreFlushMember;
 
     XxCore (int DoCount);

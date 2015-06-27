@@ -15,9 +15,11 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iomanip.h>
+#include <iomanip>
 
 #include "EzString.h"
+
+using namespace std;
 
 #ifdef EZ_STRING_MEMCOUNT
 

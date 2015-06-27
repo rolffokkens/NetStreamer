@@ -49,4 +49,4 @@ public:
     int  GetFeatureLevel (void)      { return FeatureLevel; };
 };
 
-#endif;
+#endif

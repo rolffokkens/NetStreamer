@@ -9,10 +9,12 @@
  */
 
 #include <malloc.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "XxSocket.h"
 #include "NrServer.h"
+
+using namespace std;
 
 static void ShowArgErrorMessage (EzString ProgName)
 {

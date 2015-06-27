@@ -70,7 +70,8 @@ INCLUDE = -I/usr/include/g++ -IlibXxWin/include -IlibXxStd/include \
 	-IlibFksUtil/include -IlibNrWin/include -IlibNrStd/include \
 	-IlibAdpcm/include
 CFLAGS = ${DEBUG} ${INCLUDE} -O3 -W -DNR_VERSION=\"${NR_VERSION}\"
-LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
+#LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
+LDFLAGS = ${DEBUG}
 SOFLAGS = ${DEBUG} -shared
 MAKEFILE =
 
@@ -80,7 +81,7 @@ EXECS = libFksUtil.so libAdpcm.so libXxStd.so libXxWin.so libNrStd.so \
 	NrEncoder NrEncoderSh
 
 # X11 = -lX11 -lXpm
-X11 = /usr/X11R6/lib/libX11.so /usr/X11R6/lib/libXpm.so
+X11 = -lX11 -lXpm
 
 STATXXUTILLIB  = libFksUtil/lib/libFksUtil.a
 STATXXADPCMLIB = libAdpcm/lib/libAdpcm.a
@@ -103,9 +104,10 @@ EXECS = libFksUtil.so libAdpcm.so libXxStd.so libXxWin.so libNrStd.so \
 	NrReceiverSh NrReceiver NrRecFrontend NrTransmitter NrServer \
 	NrEncoder NrEncoderSh
 
-all:	.depend SubDirs socktest xtestSh xtest NrDll.so DllTest $(EXECS)
+all:	.depend SubDirs socktest xtestSh xtest $(EXECS)
 
 SubDirs:
+	mkdir -p lib
 	for i in $(SUBDIRS); do ln -s $$i/lib/$$i.so .; test 0; done
 	for i in $(SUBDIRS); do DEBUG=${DEBUG} make -C $$i; done
 
@@ -150,11 +152,11 @@ clean:
 	NrServer NrTransmitter NrReceiver NrRecFrontend socktest xtest xtestSh
 
 depend:
-	gcc -M ${INCLUDE} -f- `ls *.cpp` > .depend
+	gcc -M ${INCLUDE} `ls *.cpp` > .depend
 	for i in $(SUBDIRS); do make -C $$i depend; done
 
 .depend:
-	gcc -M ${INCLUDE} -f- `ls *.cpp` > .depend
+	gcc -M ${INCLUDE} `ls *.cpp` > .depend
 	@echo "Retrying Now"
 
 libFksUtil.so:
@@ -194,7 +196,7 @@ NrReceiver: ${MAKEFILE} \
 NrReceiverSh: ${MAKEFILE} \
 	NrRecMain.o
 	${LD} ${LDFLAGS} -o NrReceiverSh \
- 	libXxStd.so libNrStd.so NrRecMain.o
+ 	NrRecMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
 
 NrTransmitter: ${MAKEFILE} \
 	NrTransMain.o ${STATNRSTDLIB}
@@ -204,7 +206,7 @@ NrTransmitter: ${MAKEFILE} \
 NrTransmitterSh: ${MAKEFILE} \
 	NrTransMain.o
 	${LD} ${LDFLAGS} -o NrTransmitterSh \
- 	libXxStd.so libNrStd.so NrTransMain.o
+ 	NrTransMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
 
 NrEncoder: ${MAKEFILE} \
 	NrEncodeMain.o ${STATNRSTDLIB}
@@ -214,7 +216,7 @@ NrEncoder: ${MAKEFILE} \
 NrEncoderSh: ${MAKEFILE} \
 	NrEncodeMain.o
 	${LD} ${LDFLAGS} -o NrEncoderSh \
- 	libXxStd.so libNrStd.so NrEncodeMain.o
+ 	NrEncodeMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
 
 DllTest: ${MAKEFILE} \
 	DllTest.o
@@ -224,7 +226,7 @@ DllTest: ${MAKEFILE} \
 NrServerSh: ${MAKEFILE} \
 	NrServerMain.o
 	${LD} ${LDFLAGS} -o NrServerSh \
- 	libXxStd.so libNrStd.so NrServerMain.o
+ 	NrServerMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
 
 NrServer: ${MAKEFILE} \
 	NrServerMain.o ${STATNRSTDLIB}
@@ -237,14 +239,14 @@ socktest: ${MAKEFILE} \
 	socktest.o ${STATXXWINLIB} ${X11}
 
 xtest: ${MAKEFILE} \
-	xtest.o ${STATXXWINLIB}
+	xtest.o ${STATXXWINLIB} xtest-xpm.o
 	${LD} ${LDFLAGS} -o xtest \
-	xtest.o ${STATXXWINLIB} ${X11}
+	xtest.o xtest-xpm.o ${STATXXWINLIB} ${X11}
 
 xtestSh: ${MAKEFILE} \
-	xtest.o
+	xtest.o xtest-xpm.o
 	${LD} ${LDFLAGS} -o xtestSh \
-	libXxWin.so xtest.o
+	xtest.o xtest-xpm.o libXxWin.so libXxStd.so libFksUtil.so
 
 NrRecFrontend: ${MAKEFILE} \
 	NrRecFrontend.o ${STATNRWINLIB}
@@ -253,7 +255,6 @@ NrRecFrontend: ${MAKEFILE} \
 
 NrRecFrontendSh: ${MAKEFILE} \
 	NrRecFrontend.o
-	${LD} ${LDFLAGS} -o NrRecFrontendSh libNrWin.so \
-	NrRecFrontend.o
+	${LD} ${LDFLAGS} -o NrRecFrontendSh NrRecFrontend.o libNrWin.so libXxWin.so libNrStd.so libXxStd.so libAdpcm.so libFksUtil.so
 
 include .depend

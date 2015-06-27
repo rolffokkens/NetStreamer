@@ -1,5 +1,7 @@
-#include <iostream.h>
+#include <iostream>
 #include "XxStdio.h"
+
+using namespace std;
 
 class TestStdIn : public XxStdIn {
     virtual void HandleRead (EzString Text);

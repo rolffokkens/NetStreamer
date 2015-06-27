@@ -8,7 +8,10 @@
  *
  */
 
+#include "Exception.h"
 #include "NrRateAdjust.h"
+
+using namespace std;
 
 NrRateAdjust::NrRateAdjust (char InSampleRate, int OutSampleRate)
 {
@@ -53,9 +56,7 @@ EzString NrRateAdjust::ProcessData (EzString Data)
             if (Divisor == DivisorVal) {
                 *pOut++ = (Sum / DivisorVal);
                 if (pOut == pOutLast) {
-                    cerr << "NrRateAdjust: Internal error: Outbuf too small"
-                         << endl;
-                    exit (1);
+                    throw Exception ("NrRateAdjust: Internal error: Outbuf too small");
                 };
                 Sum     = 0;
                 Divisor = 0;

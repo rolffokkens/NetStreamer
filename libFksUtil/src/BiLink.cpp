@@ -9,8 +9,10 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 #include "BiLink.h"
+
+using namespace std;
 
 BiLink::BiLink (BiLinkType Type, void *pObj)
 {

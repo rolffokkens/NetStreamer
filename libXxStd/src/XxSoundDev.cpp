@@ -20,6 +20,8 @@
 
 #include "XxSoundDev.h"
 
+using namespace std;
+
 #define AUDIO "/dev/dsp"
 
 XxSoundDev::XxSoundDev (void)
@@ -116,7 +118,7 @@ EzString XxSoundDev::ProcessReadData  (EzString Data)
             InLen    = Data.Length () >> 1;
             pText    = Data.Text ();
 
-            if (int (pText) & (sizeof (short) - 1)) {
+            if (uint64_t (pText) & (sizeof (short) - 1)) {
                 pInBuf16 = new short [InLen + 1];
                 memcpy (pInBuf16, Data.Text (), InLen + InLen);
             } else {
@@ -149,7 +151,7 @@ EzString XxSoundDev::ProcessReadData  (EzString Data)
                     InLen  -= 1;
                 };
             };
-            if (int (pText) & (sizeof (short) - 1)) {
+            if (uint64_t (pText) & (sizeof (short) - 1)) {
                 delete pInBuf16;
             };
         };

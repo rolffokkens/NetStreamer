@@ -16,8 +16,9 @@
 class XxTimer {
 public:
     typedef long TimeType;
-private:
+
     typedef BlSet<XxTimer> XxTimerSet;
+private:
     XxTimerSet Member;
 
     static TimeType MsCurTime;

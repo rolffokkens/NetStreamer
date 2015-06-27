@@ -134,7 +134,7 @@ private:
 protected:
     virtual void OnAccept (void);
 
-    XxTcpSocket::Remove;
+    using XxTcpSocket::Remove;
 
     void HandleAction (XxAction Action);
 public:
@@ -181,7 +181,7 @@ protected:
     XxConnection
         (int Fd, const XxSocketAddr &MyAddr, const XxSocketAddr &HisAddr);
 
-    XxTcpSocket::Remove;
+    using XxTcpSocket::Remove;
 
     void Write (EzString Data) { XxStream::Write (Data); };
 

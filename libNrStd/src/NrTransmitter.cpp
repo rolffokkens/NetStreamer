@@ -8,11 +8,13 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 
 #include "XxSocket.h"
 #include "NrTransmitter.h"
 #include "NrNetRadio.h"
+
+using namespace std;
 
 long MsStartTime = 0;
 
@@ -54,7 +56,7 @@ NrTransConnection::NrTransConnection
     , DisplayTimer (this)
 {
     NrTransConnection::AudioSeq       = 0;
-    NrTransConnection::pCurMsgHandler = &PhHelloHandleMessage;
+    NrTransConnection::pCurMsgHandler = &NrTransConnection::PhHelloHandleMessage;
     NrTransConnection::AddrPort       = AddrPort;
     NrTransConnection::Freq           = Freq;
     NrTransConnection::Description    = Description;
@@ -69,6 +71,7 @@ NrTransConnection::~NrTransConnection (void)
     delete pSoundSource;
 };
 
+template <>
 void NrTransConnection::TransDisplayTimer::HandleTimeOut (int)
 {
     pOwner->SendInfo ();
@@ -130,7 +133,7 @@ void NrTransConnection::PhClientHandleMessage (NrMsgCode MsgCode, EzString Data)
         return;
     };
 
-    pCurMsgHandler = &PhModeHandleMessage;
+    pCurMsgHandler = &NrTransConnection::PhModeHandleMessage;
     SendMessage
         ( MsgModeTransmitter
         , NumberToString (Freq) + EzString (" ") + Description
@@ -140,7 +143,7 @@ void NrTransConnection::PhClientHandleMessage (NrMsgCode MsgCode, EzString Data)
 void NrTransConnection::PhBinaryHandleMessage (NrMsgCode MsgCode, EzString Data)
 {
     if (MsgCode == MsgBinary) {
-        pCurMsgHandler = &PhClientHandleMessage;
+        pCurMsgHandler = &NrTransConnection::PhClientHandleMessage;
 
         SendMessage
             ( MsgClientInfo
@@ -157,7 +160,7 @@ void NrTransConnection::PhHelloHandleMessage (NrMsgCode MsgCode, EzString Data)
     if (MsgCode == MsgReady) {
         SendMessage (MsgBinary, "");
 
-        pCurMsgHandler = &PhBinaryHandleMessage;
+        pCurMsgHandler = &NrTransConnection::PhBinaryHandleMessage;
     } else {
         CloseTrans ("Protocol Error");
     };
@@ -205,7 +208,7 @@ void NrTransConnection::CloseTrans (EzString Message)
 
 void NrTransConnection::SendInfo (void)
 {
-    if (pCurMsgHandler == &PhModeHandleMessage) {
+    if (pCurMsgHandler == &NrTransConnection::PhModeHandleMessage) {
         SendMessage (MsgToTuned, MsgStrDisplay + EzString (" ") + SoundInfo);
     };
 };

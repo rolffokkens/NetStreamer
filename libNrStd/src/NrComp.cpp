@@ -8,7 +8,8 @@
  *
  */
 
-#include <iostream.h>
+#include <stdint.h>
+#include <iostream>
 
 #include "NrComp.h"
 
@@ -75,7 +76,7 @@ EzString NrComp::Compress (EzString Sound)
     InLen   = Sound.Length () >> 1;
     pSound  = Sound.Text ();
 
-    if ((int (pSound) & (sizeof (Sample) - 1)) != 0) {
+    if ((uint64_t (pSound) & (sizeof (Sample) - 1)) != 0) {
         pEven = new short[(InLen >> 1) + 1];
         memcpy (pEven, pSound, InLen);
         pIn = pEven;

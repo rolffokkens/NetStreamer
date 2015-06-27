@@ -13,6 +13,8 @@
 
 #include "NrTransFiles.h"
 
+using namespace std;
+
 static int SelectFile (const struct dirent *pDirEnt)
 {
     const char *cp = pDirEnt->d_name;
@@ -163,6 +165,7 @@ void NrTransFiles::OnDisconnect (void)
     OpenNext ();
 };
 
+template <>
 void NrTransFiles::TransFilesTimer::HandleTimeOut (int Count)
 {
     pOwner->HandleTimeOut (Count);

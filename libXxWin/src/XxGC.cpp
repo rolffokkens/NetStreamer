@@ -34,14 +34,14 @@ XxGC::XxGC (void)
              );
 #   ifdef CRE_TRACE
     printf ("Create GC %x\n", int (gc));
-#   endif;
+#   endif
 };
 
 XxGC::~XxGC (void)
 {
 #   ifdef CRE_TRACE
     printf ("Destroy GC %x\n", int (gc));
-#   endif;
+#   endif
 
     XFreeGC (XxApplication::GetDisplay (), gc);
 };

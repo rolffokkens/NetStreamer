@@ -8,7 +8,7 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 #include "NrSpeedCalc.h"
 
 struct NrSpeedCalc::NrSpeedSample {

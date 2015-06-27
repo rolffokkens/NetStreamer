@@ -14,6 +14,8 @@
 #include "Exception.h"
 #include "XxPixmap.h"
 
+using namespace std;
+
 void XxPixmap::Constr (int Width, int Height)
 {
     XxPixmap::Width  = Width;

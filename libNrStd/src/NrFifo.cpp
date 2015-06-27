@@ -12,6 +12,8 @@
 
 #include "NrFifo.h"
 
+using namespace std;
+
 inline void AdjustAvg (int &Avg, int New, int Weight)
 {
     Avg = ((Avg << Weight) - Avg + New ) >> Weight;

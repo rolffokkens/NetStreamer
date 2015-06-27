@@ -9,11 +9,13 @@
  */
 
 #include <errno.h>
-#include <iostream.h>
+#include <iostream>
 #include <fcntl.h>
 
 #include "NrMessages.h"
 #include "NrReceiver.h"
+
+using namespace std;
 
 NrRecSoundDev::NrRecSoundDev (NrRecConnection *pConnection)
 {
@@ -57,7 +59,7 @@ NrRecConnection::NrRecConnection (int Freq, char SampleRate, EzString AddInfo)
     , Pump (this, 50000, "Receiver", SampleRate)
 {
     NrRecConnection::Initialized    = 0;
-    NrRecConnection::pCurMsgHandler = &PhHelloHandleMessage;
+    NrRecConnection::pCurMsgHandler = &NrRecConnection::PhHelloHandleMessage;
     NrRecConnection::Freq           = Freq;
     NrRecConnection::SampleRate     = SampleRate;
     NrRecConnection::MuteFlag       = 1;
@@ -152,7 +154,7 @@ void NrRecConnection::PhReadyHandleMessage   (NrMsgCode MsgCode, EzString Data)
 void NrRecConnection::PhTuneHandleMessage   (NrMsgCode MsgCode, EzString Data)
 {
     if (MsgCode == MsgTuning) {
-        pCurMsgHandler = &PhReadyHandleMessage;
+        pCurMsgHandler = &NrRecConnection::PhReadyHandleMessage;
         Initialized = 1;
         HandleInitDone ();
     } else {
@@ -163,7 +165,7 @@ void NrRecConnection::PhTuneHandleMessage   (NrMsgCode MsgCode, EzString Data)
 void NrRecConnection::PhMuteHandleMessage   (NrMsgCode MsgCode, EzString Data)
 {
     if (MsgCode == MsgMuteOff || MsgCode == MsgMuteOn) {
-        pCurMsgHandler = &PhReadyHandleMessage;
+        pCurMsgHandler = &NrRecConnection::PhReadyHandleMessage;
         Initialized = 1;
         HandleInitDone ();
         if (Freq != 0) DoTune (Freq);
@@ -175,7 +177,7 @@ void NrRecConnection::PhMuteHandleMessage   (NrMsgCode MsgCode, EzString Data)
 void NrRecConnection::PhModeHandleMessage   (NrMsgCode MsgCode, EzString Data)
 {
     if (MsgCode == MsgModeReceiver) {
-        pCurMsgHandler = &PhMuteHandleMessage;
+        pCurMsgHandler = &NrRecConnection::PhMuteHandleMessage;
         SendMessage ((MuteFlag ? MsgMuteOn : MsgMuteOff), "");
     } else {
         CloseRec ();
@@ -196,14 +198,14 @@ void NrRecConnection::PhClientHandleMessage   (NrMsgCode MsgCode, EzString Data)
         return;
     };
 
-    pCurMsgHandler = &PhModeHandleMessage;
+    pCurMsgHandler = &NrRecConnection::PhModeHandleMessage;
     SendMessage (MsgModeReceiver, "");
 };
 
 void NrRecConnection::PhBinaryHandleMessage (NrMsgCode MsgCode, EzString Data)
 {
     if (MsgCode == MsgBinary) {
-        pCurMsgHandler = &PhClientHandleMessage;
+        pCurMsgHandler = &NrRecConnection::PhClientHandleMessage;
         SendMessage
             ( MsgClientInfo
             ,   EzString (FEATURE_LEVEL) + EzString (" ") + GetUname ()
@@ -219,7 +221,7 @@ void NrRecConnection::PhHelloHandleMessage (NrMsgCode MsgCode, EzString Data)
     if (MsgCode == MsgReady) {
         SendMessage (MsgBinary, "");
 
-        pCurMsgHandler = &PhBinaryHandleMessage;
+        pCurMsgHandler = &NrRecConnection::PhBinaryHandleMessage;
     } else {
         CloseRec ();
     };

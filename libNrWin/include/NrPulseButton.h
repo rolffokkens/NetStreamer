@@ -7,7 +7,7 @@ class NrPulseButton : public NrRecButton {
 private:
     typedef tXxTimer<NrPulseButton> NrButTimer;
 
-    friend class NrButTimer;
+    friend NrButTimer;
 
     NrButTimer bTimer;
     int MsPulse;

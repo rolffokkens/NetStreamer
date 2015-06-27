@@ -140,7 +140,7 @@ NrAnalyzer::NrAnalyzer (int BufSize, int NrBands)
     NrAnalyzer::OsSoundDelay = 0;
 
     NrAnalyzer::NrBands   = NrBands;
-    NrAnalyzer::pSubBands = new (NrSubBand *) [NrBands];
+    NrAnalyzer::pSubBands = new NrSubBand *[NrBands];
 
     pLast = NULL;
     for (i = 0; i < NrBands; i++) {

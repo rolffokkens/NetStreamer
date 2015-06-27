@@ -9,7 +9,7 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 
 #include "XxVirtual.h"
 

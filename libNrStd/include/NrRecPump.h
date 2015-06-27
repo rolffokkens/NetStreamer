@@ -11,7 +11,7 @@
 #ifndef H_RECPUMP
 #define H_RECPUMP
 
-#include <iostream.h>
+#include <iostream>
 
 #include "NrMessages.h"
 #include "NrSpeedBuf.h"

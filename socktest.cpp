@@ -1,5 +1,7 @@
-#include <iostream.h>
+#include <iostream>
 #include "XxSocket.h"
+
+using namespace std;
 
 class TestSocket : public XxUdpSocket {
 private:

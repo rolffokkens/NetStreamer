@@ -19,14 +19,7 @@
 #include "XxSocket.h"
 #include "BiLink.h"
 
-//
-// The next is a hack to allow compilation on both libc5 and libc6/glibc2
-//
-// glibc2 defines _SOCKETBITS_H and libc5 doesn't
-//
-#ifndef _SOCKETBITS_H
-typedef int socklen_t;
-#endif
+using namespace std;
 
 int XxListener::CheckListen (const XxSocketAddr &Addr)
 {

@@ -9,13 +9,15 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 
 #include "XxCore.h"
 #include "BiLink.h"
 #include "XxAutoInit.h"
 
 #include "XxApplication.h"
+
+using namespace std;
 
 static XxCore::XxCoreSet::SetOwner *pPreFlushOwner = NULL;
 

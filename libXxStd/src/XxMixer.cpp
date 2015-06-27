@@ -1,4 +1,4 @@
-#include <iostream.h>
+#include <iostream>
 #include <sys/soundcard.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -33,10 +33,7 @@ void XxMixer::HandleTimeOut (void)
     };
 };
 
-XxMixer::XxMixer
-    ( long PollDelay = 0
-    )
-    : Timer (this, PollDelay)
+XxMixer::XxMixer (long PollDelay) : Timer (this, PollDelay)
 {
     hVolume = -1;
     sVolume = -1;
@@ -49,6 +46,7 @@ XxMixer::~XxMixer (void)
     if (MixFd != -1) close (MixFd);
 };
 
+template <>
 void XxMixer::MixTimer::HandleTimeOut (int Count)
 {
     pOwner->HandleTimeOut ();

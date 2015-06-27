@@ -16,12 +16,14 @@
 #include "XxTimer.h"
 #include "NrMessages.h"
 
+using namespace std;
+
 int RateHerz[RateCount] = {
     8000
 ,   16000
 };
 
-static DoLogFlag = -1;
+static int DoLogFlag = -1;
 
 inline short SizeHostToNet (short i)
 {

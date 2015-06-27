@@ -13,6 +13,7 @@ static const int Shift1  = 8;
 
 #include <limits.h>
 
+#include "EzString.h"
 #include "NrSpeedBuf.h"
 
 inline void AdjustAvg (int &Avg, int New, int Weight)
@@ -127,7 +128,7 @@ NrSpeedBuf::NrSpeedBuf (int AimSize)
     IntTurnOff ();
 };
 
-NrSpeedBuf::~NrSpeedBuf (int AimSize)
+NrSpeedBuf::~NrSpeedBuf ()
 {
 };
 
@@ -319,7 +320,7 @@ EzString NrSpeedBuf::GetSound (unsigned int MaxSize, long MsCurTime)
             , SpeedCount
             );
     } else {
-        RetVal = Rpad ("", MaxSize, 0);
+        RetVal = Rpad (EzString (""), MaxSize, 0);
     };
 
     DiffCount -= GetBufUsed ();

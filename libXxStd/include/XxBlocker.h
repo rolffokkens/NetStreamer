@@ -22,13 +22,13 @@ class XxBlocker : public virtual XxBase {
 public:
     enum XxStatus { StatOpen, StatClosed };
     enum XxAction { ActNone = 0, ActRead = 1, ActWrite = 2, ActAccept = 4 };
+
+    typedef BlSet<XxBlocker> XxBlockerSet;
 private:
     static int BlockerCount;
 
     int      Fd;
     XxStatus bStatus;
-
-    typedef BlSet<XxBlocker> XxBlockerSet;
 
     XxBlockerSet Member;
 
@@ -36,7 +36,7 @@ private:
 
     static void Init (void);
 
-    virtual void HandleAction (XxAction Action) = NULL;
+    virtual void HandleAction (XxAction Action) = 0;
 protected:
     XxBlocker (void);
 

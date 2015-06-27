@@ -23,8 +23,7 @@ LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
 SOFLAGS = ${DEBUG} -shared
 MAKEFILE =
 
-# X11 = -lX11 -lXpm
-X11 = /usr/X11R6/lib/libX11.so /usr/X11R6/lib/libXpm.so
+X11 = -lX11 -lXpm
 
 XXWINOBJS = \
 	src/XxMaxMeter.o src/XxMeter.o src/XxPanel.o src/XxButton.o \

@@ -13,6 +13,7 @@
 
 #include "XxButton.h"
 
+template <>
 void XxButton::XxButTimer::HandleTimeOut (int Count)
 {
     pOwner->HandleTimeOut (Count);
@@ -54,7 +55,7 @@ XxButton::XxButton
     IsPressed   = 0;
     IsInWindow  = 0;
 
-    Label = NULL;
+    Label = "";
 
     SetBackground (XxGray4);
 

@@ -8,7 +8,7 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 #include "NrHistSoundBuf.h"
 
 //  static SeqId = 0;

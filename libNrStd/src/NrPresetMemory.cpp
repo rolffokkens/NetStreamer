@@ -1,9 +1,11 @@
 #include <unistd.h>
 #include <pwd.h>
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include "EzString.h"
 #include "NrPresetMemory.h"
+
+using namespace std;
 
 static EzString GetPresetFile (void)
 {

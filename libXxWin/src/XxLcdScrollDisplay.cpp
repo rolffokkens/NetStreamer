@@ -9,6 +9,7 @@
  *
  */
 
+#include "EzString.h"
 #include "XxLcdScrollDisplay.h"
 
 XxLcdScrollDisplay::XxLcdScrollDisplay
@@ -43,12 +44,12 @@ void XxLcdScrollDisplay::SetVal (EzString Val)
 void XxLcdScrollDisplay::SetScrollVal (EzString Val)
 {
     DisplayVal   = Val;
-    CurScrollVal = Rpad (' ', GetNumDigits ()) + Val;
+    CurScrollVal = Rpad (EzString (" "), GetNumDigits ()) + Val;
 
     ScrollTimer.SetRestart (RefreshDelay);
 };
 
-
+template <>
 void XxLcdScrollDisplay::ScrollTimerTyp::HandleTimeOut (int Count)
 {
     pOwner->HandleScrollTimeout ();

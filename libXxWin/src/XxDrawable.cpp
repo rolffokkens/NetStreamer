@@ -9,9 +9,11 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 
 #include "XxDrawable.h"
+
+using namespace std;
 
 XxDrawable::XxDrawable (EzString Name)
     : XxCore (1)

@@ -46,4 +46,4 @@ public:
     void SetOsSoundDelay (int OsSoundDelay);
 };
 
-#endif;
+#endif

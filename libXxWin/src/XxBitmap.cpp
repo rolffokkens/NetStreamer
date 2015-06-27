@@ -13,6 +13,8 @@
 
 #include "XxBitmap.h"
 
+using namespace std;
+
 void XxBitmap::Constr (int Width, int Height)
 {
     XxBitmap::Width  = Width;

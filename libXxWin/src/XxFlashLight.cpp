@@ -83,8 +83,8 @@ void XxFlashLight::UpdateLight (int BlinkFlag)
         );
 };
 
-void XxFlashLight::XxFlashLightTimer::HandleTimeOut
-    (int Count)
+template <>
+void XxFlashLight::XxFlashLightTimer::HandleTimeOut (int Count)
 {
     pOwner->UpdateLight (!pOwner->BlinkFlag);
 };

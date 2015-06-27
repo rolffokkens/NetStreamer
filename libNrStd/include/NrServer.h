@@ -246,4 +246,4 @@ inline NrServerTransmitterSet::SetOwner &NrServerHandler::GetTransOwner (void) {
     return pConnection->GetTransOwner ();
 };
 
-#endif;
+#endif

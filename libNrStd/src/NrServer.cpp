@@ -8,7 +8,7 @@
  *
  */
 
-#include <iostream.h>
+#include <iostream>
 
 #include "XxSocket.h"
 #include "NrServer.h"
@@ -72,16 +72,19 @@ void NrServerReceiver::TryReceive (NrServerTransmitter *pTrans, int Freq)
     };
 };
 
+template <>
 void NrServerReceiver::NrTranRecSet::TrigAttach (NrServerReceiver *pRec, NrServerTransmitter *pTrans)
 {
     pRec->TrigTranRecAttach (pTrans);
 };
 
+template <>
 void NrServerReceiver::NrTranRecSet::TrigDetach (NrServerReceiver *pRec, NrServerTransmitter *pTrans)
 {
     pRec->TrigTranRecDetach (pTrans);
 };
 
+template <>
 void NrServerReceiver::NrServerReceiverTimer::HandleTimeOut (int Count)
 {
     pOwner->HandleTimeOut (Count);
@@ -116,6 +119,7 @@ EzString NrServerTransmitter::GetType (void)
     return EzString ("TRANSMITTER");
 };
 
+template <>
 void NrServerTransmitter::NrServerTransmitterTimer::HandleTimeOut (int Count)
 {
     pOwner->HandleTimeOut (Count);

@@ -107,8 +107,10 @@ The Rpad function:
 
 #define EZ_STRING_MEMCOUNT
 
-#include <iostream.h>
+#include <iostream>
 #include <string.h>
+
+class EzSubstr;
 
 class EzString {
     friend void EzStringSetTrace (EzString &Str);
@@ -135,8 +137,8 @@ private:
 
     void Constr (const EzString &);
 public:
-    ostream &print (ostream &os) const;
-    istream &scan (istream &is);
+    std::ostream &print (std::ostream &os) const;
+    std::istream &scan (std::istream &is);
     EzString (void);
     EzString (char);
 
@@ -173,8 +175,6 @@ public:
     static int GetTotalStringLength (void);
 };
 
-
-
 EzString operator+ (const EzString &l, const EzString &r);
 
 int operator< (const EzString &l, const EzString &r);
@@ -184,8 +184,6 @@ int operator== (const EzString &l, const EzString &r);
 int operator> (const EzString &l, const EzString &r);
 
 int operator!= (const EzString &l, const EzString &r);
-
-
 
 class EzSubstr {
     friend class EzString;
@@ -218,12 +216,12 @@ public:
 
 
 
-inline ostream &operator<< (ostream &os, const EzString &str)
+inline std::ostream &operator<< (std::ostream &os, const EzString &str)
 {
     return str.print (os);
 }
 
-inline istream &operator>> (istream &is, EzString &str)
+inline std::istream &operator>> (std::istream &is, EzString &str)
 {
     return str.scan (is);
 }
@@ -261,5 +259,7 @@ inline EzString Substr (EzString s, int pos)
 }
 
 EzString NumberToString (long number, int radix = 10);
+
+EzString Remove (const EzString &s1, const EzString &s2);
 
 #endif
