@@ -58,15 +58,15 @@ archive:
 	`cd ..; ls libNrStd/lib/* libNrStd/include/*.h`
 
 clean:
-	rm src/*.o lib/*.so.* lib/*.a
+	rm -f .depend src/*.o lib/*.so.* lib/*.a
 
 depend:
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 
 .depend:
-	mkdir lib; test 0
+	mkdir -p lib; test 0
 	ln -s ../*.so .; test 0
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 	@echo "Retrying Now"
 
 lib/libNrStd.a: ${MAKEFILE} \
@@ -81,4 +81,6 @@ lib/libNrStd.so.${NR_VERSION}: ${MAKEFILE} \
 	rm lib/libNrStd.so; test 0
 	ln -s libNrStd.so.${NR_VERSION} lib/libNrStd.so
 
+ifneq ($(MAKECMDGOALS),clean)
 include .depend
+endif

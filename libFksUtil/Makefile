@@ -37,14 +37,14 @@ archive:
 	`cd ..; ls libFksUtil/include/*.h`
 
 clean:
-	rm src/*.o lib/*.so.* lib/*.a
+	rm -f .depend src/*.o lib/*.so.* lib/*.a
 
 depend:
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 
 .depend:
-	mkdir lib; test 0
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	mkdir -p lib; test 0
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 	@echo "Retrying Now"
 
 lib/libFksUtil.a: ${MAKEFILE} \
@@ -59,4 +59,6 @@ lib/libFksUtil.so.${NR_VERSION}: ${MAKEFILE} \
 	rm lib/libFksUtil.so; test 0
 	ln -s libFksUtil.so.${NR_VERSION} lib/libFksUtil.so
 
+ifneq ($(MAKECMDGOALS),clean)
 include .depend
+endif

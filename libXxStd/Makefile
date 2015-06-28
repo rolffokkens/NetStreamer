@@ -30,7 +30,7 @@ SOFLAGS = ${DEBUG} -shared
 MAKEFILE =
 
 XXSTDOBJS = \
-	src/XxSoundDev.o src/XxSocket.o src/XxStream.o src/XxBlocker.o \
+	src/XxSoundDevOSS.o src/XxSocket.o src/XxStream.o src/XxBlocker.o \
 	src/XxMixer.o src/XxTimer.o src/XxBase.o src/XxSerial.o src/XxStdio.o
 
 .SUFFIXES:
@@ -53,12 +53,12 @@ clean:
 	rm .depend src/*.o lib/*.so.* lib/*.so
 
 depend:
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 
 .depend:
-	mkdir lib; test 0
+	mkdir -p lib; test 0
 	ln -s ../*.so .; test 0
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 	@echo "Retrying Now"
 
 lib/libXxStd.a: ${MAKEFILE} \
@@ -80,4 +80,6 @@ XxStdTest: ${MAKEFILE} libXxStd.so \
 	libXxStd.so libFksUtil.so \
 	src/XxStdTest.o
 
+ifneq ($(MAKECMDGOALS),clean)
 include .depend
+endif

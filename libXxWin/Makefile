@@ -49,15 +49,15 @@ archive:
 	`cd ..; ls libXxWin/lib/* libXxWin/include/*.h`
 
 clean:
-	rm .depend src/*.o lib/*.so.*
+	rm -f .depend src/*.o lib/*.so.*
 
 depend:
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 
 .depend:
-	mkdir lib; test 0
+	mkdir -p lib; test 0
 	ln -s ../*.so .; test 0
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 	@echo "Retrying Now"
 
 lib/libXxWin.a: ${MAKEFILE} \
@@ -72,4 +72,6 @@ lib/libXxWin.so.${NR_VERSION}: ${MAKEFILE} \
 	rm lib/libXxWin.so; test 0
 	ln -s libXxWin.so.${NR_VERSION} lib/libXxWin.so
 
+ifneq ($(MAKECMDGOALS),clean)
 include .depend
+endif

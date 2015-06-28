@@ -35,14 +35,14 @@ archive:
         `cd ..; ls libAdpcm/lib/* libAdpcm/include/*.h`
 
 clean:
-	rm .depend src/*.o lib/*.a lib/*.so.*; test 0
+	rm -f .depend src/*.o lib/*.a lib/*.so.*; test 0
 
 depend:
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 
 .depend:
-	mkdir lib; test 0
-	makedepend ${INCLUDE} -f- `ls src/*.cpp` > .depend
+	mkdir -p lib; test 0
+	gcc -M ${INCLUDE} `ls src/*.cpp` > .depend
 	@echo "Retrying Now"
 
 lib/libAdpcm.a: ${MAKEFILE} \
@@ -57,4 +57,6 @@ lib/libAdpcm.so.${NR_VERSION}: ${MAKEFILE} \
 	rm lib/libAdpcm.so; test 0
 	ln -s libAdpcm.so.${NR_VERSION} lib/libAdpcm.so
 
+ifneq ($(MAKECMDGOALS),clean)
 include .depend
+endif

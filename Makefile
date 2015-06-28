@@ -148,7 +148,7 @@ archive:
 
 clean:
 	for i in $(SUBDIRS); do make clean -C $$i; done
-	rm *.o *.so NrServerSh NrTransmitterSh NrReceiverSh NrRecFrontendSh \
+	rm -f .depend *.o *.so NrServerSh NrTransmitterSh NrReceiverSh NrRecFrontendSh */lib/* \
 	NrServer NrTransmitter NrReceiver NrRecFrontend socktest xtest xtestSh
 
 depend:
@@ -257,4 +257,6 @@ NrRecFrontendSh: ${MAKEFILE} \
 	NrRecFrontend.o
 	${LD} ${LDFLAGS} -o NrRecFrontendSh NrRecFrontend.o libNrWin.so libXxWin.so libNrStd.so libXxStd.so libAdpcm.so libFksUtil.so
 
+ifneq ($(MAKECMDGOALS),clean)
 include .depend
+endif
