@@ -18,8 +18,6 @@
 #include "XxWindow.h"
 #include "XxButton.h"
 
-#include "xtest.xpm"
-
 class ByeButton : public XxButton {
 private:
 protected:
@@ -153,7 +151,7 @@ int main (void)
 
     // try {
 //        pXpm = new XxPixmap ("testXpm", xtest_xpm);
-        delete pXpm;
+//        delete pXpm;
 
         new TopWindow;
         new NewButton  (NULL, 10, 10, 100, 30);
