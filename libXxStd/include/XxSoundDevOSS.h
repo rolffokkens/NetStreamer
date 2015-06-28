@@ -1,5 +1,5 @@
 /*
- * file: XxSoundDev.h
+ * file: XxSoundDevOSS.h
  *
  * This file is part of the XxStdLib library which is developed to support
  * the development of NetStreamer. This file is distributed under the
@@ -17,7 +17,7 @@
 
 #include "XxStream.h"
 
-class XxSoundDev : virtual public XxStream {
+class XxSoundDevOSS : virtual public XxStream {
 private:
     MODE_RW ModeRW;
     int     IntBufSize;
@@ -48,9 +48,9 @@ protected:
 
     virtual void Close (void);
 public:
-    XxSoundDev (void);
+    XxSoundDevOSS (void);
 
-    virtual ~XxSoundDev (void);
+    virtual ~XxSoundDevOSS (void);
 
     virtual int Open
         (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed);

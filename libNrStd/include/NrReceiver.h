@@ -18,12 +18,12 @@
 #include "NrNetRadio.h"
 #include "NrComp.h"
 #include "NrDecomp.h"
-#include "XxSoundDev.h"
+#include "XxSoundDevOSS.h"
 #include "NrRecPump.h"
 
 class NrRecConnection;
 
-class NrRecSoundDev : public XxSoundDev {
+class NrRecSoundDev : public XxSoundDevOSS {
     friend NrRecConnection;
 private:
     NrRecConnection *pConnection;

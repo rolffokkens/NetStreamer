@@ -31,7 +31,7 @@ EzString NrTransSoundDev::ProcessReadData  (EzString Data)
     if (MuteFlag) {
         RetVal = "";
     } else {
-        RetVal = Comp.Compress (XxSoundDev::ProcessReadData (Data));
+        RetVal = Comp.Compress (XxSoundDevOSS::ProcessReadData (Data));
     };
 
     return RetVal;

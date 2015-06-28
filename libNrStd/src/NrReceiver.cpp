@@ -24,10 +24,10 @@ NrRecSoundDev::NrRecSoundDev (NrRecConnection *pConnection)
 
 void NrRecSoundDev::IntHandleWrite (void)
 {
-    if (XxSoundDev::GetOutBufSize () < AUDIO_BLOCK) {
-        XxSoundDev::Write (pConnection->GetSound (AUDIO_BLOCK));
+    if (XxSoundDevOSS::GetOutBufSize () < AUDIO_BLOCK) {
+        XxSoundDevOSS::Write (pConnection->GetSound (AUDIO_BLOCK));
     };
-    XxSoundDev::IntHandleWrite ();
+    XxSoundDevOSS::IntHandleWrite ();
 };
 
 int NrRecSoundDev::Open
@@ -37,7 +37,7 @@ int NrRecSoundDev::Open
     char *cp;
     int  OpenOk, Dummy = 0;
 
-    OpenOk = XxSoundDev::Open (ModeRW, SampleSize, StereoFlag, Speed);
+    OpenOk = XxSoundDevOSS::Open (ModeRW, SampleSize, StereoFlag, Speed);
 
     if (OpenOk) {
         IntBufSize = GetIntOutBufFree ();

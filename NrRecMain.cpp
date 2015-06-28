@@ -13,7 +13,7 @@
 
 #include "XxSocket.h"
 #include "NrReceiver.h"
-#include "XxSoundDev.h"
+#include "XxSoundDevOSS.h"
 
 using namespace std;
 

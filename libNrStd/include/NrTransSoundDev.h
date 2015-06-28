@@ -16,13 +16,13 @@
 #include "XxTimer.h"
 #include "XxSocket.h"
 #include "NrNetRadio.h"
-#include "XxSoundDev.h"
+#include "XxSoundDevOSS.h"
 #include "NrComp.h"
 
 #include "NrTransmitter.h"
 
 class NrTransSoundDev : public virtual NrTransSoundSource
-                      , public virtual XxSoundDev {
+                      , public virtual XxSoundDevOSS {
 private:
     int    MuteFlag;
     NrComp Comp;

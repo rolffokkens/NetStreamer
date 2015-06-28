@@ -16,7 +16,7 @@
 #include "NrTransSoundDev.h"
 #include "NrTransFiles.h"
 #include "NrTransStdIn.h"
-#include "XxSoundDev.h"
+#include "XxSoundDevOSS.h"
 
 using namespace std;
 

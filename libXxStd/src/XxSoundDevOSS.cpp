@@ -1,5 +1,5 @@
 /*
- * file: XxSoundDev.cpp 
+ * file: XxSoundDevOSS.cpp 
  *
  * This file is part of the XxStdLib library which is developed to support
  * the development of NetStreamer. This file is distributed under the
@@ -18,13 +18,13 @@
 #include <sys/soundcard.h>
 #include <sys/ioctl.h>
 
-#include "XxSoundDev.h"
+#include "XxSoundDevOSS.h"
 
 using namespace std;
 
 #define AUDIO "/dev/dsp"
 
-XxSoundDev::XxSoundDev (void)
+XxSoundDevOSS::XxSoundDevOSS (void)
 {
     ModeRW         = ModeRead;
     IntBufSize     = -1;
@@ -35,26 +35,26 @@ XxSoundDev::XxSoundDev (void)
     IntSampleBytes = 0;
 };
 
-void XxSoundDev::IntClose (void)
+void XxSoundDevOSS::IntClose (void)
 {
     if (GetStatus () == StatOpen) {
         ioctl (GetFd (), SNDCTL_DSP_RESET, NULL);
     };
 };
 
-XxSoundDev::~XxSoundDev (void)
+XxSoundDevOSS::~XxSoundDevOSS (void)
 {
     IntClose ();
 };
 
 
-void XxSoundDev::Close (void)
+void XxSoundDevOSS::Close (void)
 {
     IntClose ();
     XxStream::Close ();
 };
 
-EzString XxSoundDev::ProcessReadData  (EzString Data)
+EzString XxSoundDevOSS::ProcessReadData  (EzString Data)
 {
     short      *pOutBuf16, *pO16;
     char       *pOutBuf8,  *pO8;
@@ -197,7 +197,7 @@ EzString XxSoundDev::ProcessReadData  (EzString Data)
     return RetVal;
 };
 
-EzString XxSoundDev::ProcessWriteData  (EzString Data)
+EzString XxSoundDevOSS::ProcessWriteData  (EzString Data)
 {
     const short *pShort;
     short       Sample;
@@ -244,7 +244,7 @@ EzString XxSoundDev::ProcessWriteData  (EzString Data)
     return RetVal;
 };
 
-int XxSoundDev::GetWriteChunkSize (EzString Data)
+int XxSoundDevOSS::GetWriteChunkSize (EzString Data)
 {
     struct audio_buf_info BufInfo;
     int RetVal;
@@ -258,7 +258,7 @@ int XxSoundDev::GetWriteChunkSize (EzString Data)
     return RetVal;
 };
 
-int XxSoundDev::GetIntOutBufFree (void)
+int XxSoundDevOSS::GetIntOutBufFree (void)
 {
     int Fd = GetFd ();
     struct audio_buf_info BufInfo;
@@ -268,12 +268,12 @@ int XxSoundDev::GetIntOutBufFree (void)
     return BufInfo.bytes;
 };
 
-int XxSoundDev::GetIntOutBufSize (void)
+int XxSoundDevOSS::GetIntOutBufSize (void)
 {
     return IntBufSize - GetIntOutBufFree ();
 };
 
-int XxSoundDev::SetSampleSize (int Fd, int SampleSize)
+int XxSoundDevOSS::SetSampleSize (int Fd, int SampleSize)
 {
     int Size = SampleSize;
 
@@ -292,7 +292,7 @@ cerr << "Sample Size Selection Error" << endl;
     return 1;
 };
 
-int XxSoundDev::SetStereo (int Fd, int StereoFlag)
+int XxSoundDevOSS::SetStereo (int Fd, int StereoFlag)
 {
     int Stereo;
 
@@ -314,7 +314,7 @@ cerr << "Stereo Selection Error" << endl;
     return 1;
 };
 
-int XxSoundDev::SetSpeed (int Fd, int SampleRate)
+int XxSoundDevOSS::SetSpeed (int Fd, int SampleRate)
 {
     int RetVal;
 
@@ -324,10 +324,17 @@ int XxSoundDev::SetSpeed (int Fd, int SampleRate)
 cerr << "Speed Selection Error" << endl;
     };
 
+{
+    int max_fragments = 32;
+    int size_selector = 10;
+    int frag = (max_fragments << 16) | (size_selector);
+    RetVal = (ioctl (Fd, SNDCTL_DSP_SETFRAGMENT, &frag) == 0);
+}
+
     return RetVal;
 };
 
-int XxSoundDev::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed)
+int XxSoundDevOSS::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed)
 {
     struct audio_buf_info BufInfo;
     int  Fd, oMode;
@@ -335,7 +342,7 @@ int XxSoundDev::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed)
 
     Close ();
 
-    XxSoundDev::ModeRW = ModeRW;
+    XxSoundDevOSS::ModeRW = ModeRW;
     oMode = (ModeRW == ModeRead ? O_RDONLY : O_WRONLY);
     Fd = open (AUDIO, oMode | O_NONBLOCK, 0);
 
@@ -365,7 +372,7 @@ int XxSoundDev::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed)
     return 1;
 };
 
-int XxSoundDev::GetMaxLevel (void)
+int XxSoundDevOSS::GetMaxLevel (void)
 {
     int RetVal;
 
@@ -375,7 +382,7 @@ int XxSoundDev::GetMaxLevel (void)
     return RetVal;
 };
 
-int XxSoundDev::GetIntOutDelay (void)
+int XxSoundDevOSS::GetIntOutDelay (void)
 {
     return    (IntBufSize * 1000)
             / ((IntStereo ? 2 : 1) * IntSampleBytes * SampleRate);
