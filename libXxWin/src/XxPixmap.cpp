@@ -42,7 +42,7 @@ XxPixmap::XxPixmap (EzString Name, int Width, int Height) : XxDrawable (Name)
 XxPixmap::XxPixmap
     ( EzString Name
     , int Width, int Height
-    , const char *Data
+    , const unsigned char *Data
     , XxColor FrontColor, XxColor BackColor
     )
     : XxDrawable (Name)
@@ -117,5 +117,6 @@ XxPixmap &XxPixmap::operator= (const XxPixmap &pixmap)
     Constr (pixmap.Width, pixmap.Height);
     CopyArea (DrawGC, &pixmap, 0, 0, Width, Height, 0, 0);
 cout << "Warning: untested XxPixmap::operator=" << endl;
+    return *this;
 };
 

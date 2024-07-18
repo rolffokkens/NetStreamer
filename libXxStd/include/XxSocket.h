@@ -145,6 +145,7 @@ public:
 
     XxListener &operator= (const XxListener &Listener) {
         XxTcpSocket::operator= (Listener);
+	return *this;
     };
 
     virtual void GetRWFlags (int &rFlag, int &wFlag) {
@@ -193,6 +194,7 @@ public:
 
     XxConnection &operator= (const XxConnection &Connector) {
         XxTcpSocket::operator= (Connector);
+	return *this;
     };
 
     void GetRWFlags (int &rFlag, int &wFlag) {

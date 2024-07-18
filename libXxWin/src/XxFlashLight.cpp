@@ -16,7 +16,7 @@ XxFlashLight::XxFlashLight
     , XxWindow *pParent
     , int XOffset, int YOffset
     , int Width, int Height
-    , const char *Data
+    , const unsigned char *Data
     , XxColor OnColor, XxColor OffColor, XxColor BackColor
     , int MsFlashDelay
     )

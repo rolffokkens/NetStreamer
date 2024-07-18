@@ -36,7 +36,7 @@ public:
     XxPixmap 
         ( EzString Name
         , int Width, int Height
-        , const char *Data
+        , const unsigned char *Data
         , XxColor FrontColor, XxColor BackColor
         );
 

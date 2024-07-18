@@ -28,7 +28,7 @@
 
 struct BitmapStruct {
     int Width, Height;
-    char *Data;
+    unsigned char *Data;
 };
 
 static BitmapStruct BitMapData [] = {

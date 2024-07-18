@@ -205,7 +205,7 @@ struct BitmapStruct {
 
 #define BMStruct(X) \
 {NrP ## X ## _width,  NrP ## X ## _height, \
- NrP ## X ## _bits}
+ (char *)(NrP ## X ## _bits)}
 
 static BitmapStruct PresetBitMapData [pButtonCount] = {
     BMStruct (1)
@@ -713,11 +713,11 @@ public:
 };
 
 static void PutBitMap
-    ( XxDrawable &Drawable
-    , EzString  TmpName
-    , int       XPos,  int YPos
-    , int       Width, int Height
-    , char     *Bits
+    ( XxDrawable     &Drawable
+    , EzString      TmpName
+    , int           XPos,  int YPos
+    , int           Width, int Height
+    , unsigned char *Bits
     )
 {
     XxGC     TmpGC;
@@ -842,7 +842,7 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
                     , VolMeterPosY + 4
                     , PresetBitMapData[i].Width
                     , PresetBitMapData[i].Height
-                    , PresetBitMapData[i].Data
+                    , (unsigned char *)PresetBitMapData[i].Data
                     , XxRed4, XxRed1, XxBlack
                     );
         };
