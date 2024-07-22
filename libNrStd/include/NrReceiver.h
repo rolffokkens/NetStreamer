@@ -19,16 +19,19 @@
 #include "NrComp.h"
 #include "NrDecomp.h"
 #include "XxSoundDevOSS.h"
+#include "XxSoundDevPulse.h"
 #include "NrRecPump.h"
 
 class NrRecConnection;
 
-class NrRecSoundDev : public XxSoundDevOSS {
+#define XXSOUNDDEV XxSoundDevPulse
+
+class NrRecSoundDev : public XXSOUNDDEV {
     friend NrRecConnection;
 private:
     NrRecConnection *pConnection;
 
-    NrRecSoundDev (NrRecConnection *pConnection);
+    NrRecSoundDev (NrRecConnection *pConnection, EzString Device);
 
     virtual void IntHandleWrite (void);
 public:
@@ -124,7 +127,7 @@ protected:
     virtual void HandleExpansion (int Expansion);
     virtual void HandleMute      (int Flag);
 public:
-    NrRecConnection (int Freq, char SampleRate, EzString AddInfo);
+    NrRecConnection (int Freq, char SampleRate, EzString Driver, EzString Device, EzString AddInfo);
 
     virtual ~NrRecConnection (void) { };
 

@@ -13,8 +13,12 @@ static const int Shift1  = 8;
 
 #include <limits.h>
 
+#include <iostream>
+
 #include "EzString.h"
 #include "NrSpeedBuf.h"
+
+using namespace std;
 
 inline void AdjustAvg (int &Avg, int New, int Weight)
 {
@@ -139,6 +143,8 @@ void NrSpeedBuf::PutSound (EzString Sound, long MsCurTime, int Expansion)
     int SoundSize;
 
     if (State == Off) return;
+
+cerr << "GetBufUsed: " << GetBufUsed () << endl;
 
     AdjustAvg (AvgBufSize, GetBufUsed (), 10);
 
@@ -352,6 +358,8 @@ int NrSpeedBuf::GetAdjustRate (void)
 
     tC = AvgCounter << 8;
     tD = AvgDivisor;
+
+cerr << "GetAdjustRate:" << AvgCounter << "," << AvgDivisor << endl;
 
     return tC / tD;
 };

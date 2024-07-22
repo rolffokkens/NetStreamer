@@ -174,7 +174,6 @@ XxWindow::XxWindow
 {
     Window               XxParentWindow;
     Atom                 atom;
-
     XxWindow::Parent   = Parent;
 
     Hints.x            = XPos;

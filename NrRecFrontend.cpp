@@ -431,8 +431,8 @@ class NrRecFrontend : public XxWindow, public NrRecConnection {
     class RecordButton;
     class MuteButton;
     class VolMixer;
-    class VolUpButton;;
-    class VolDownButton;;
+    class VolUpButton;
+    class VolDownButton;
     class MemoryButton;
     class PresetButton;
 
@@ -441,8 +441,8 @@ class NrRecFrontend : public XxWindow, public NrRecConnection {
     friend RecordButton;
     friend MuteButton;
     friend VolMixer;
-    friend VolUpButton;;
-    friend VolDownButton;;
+    friend VolUpButton;
+    friend VolDownButton;
     friend MemoryButton;
     friend PresetButton;
 private:
@@ -708,7 +708,7 @@ protected:
     virtual void HandleMute      (int Flag);
     virtual void HandleMessage (NrMsgCode MsgCode, EzString Id, EzString Mesg);
 public:
-    NrRecFrontend (EzString ConnectString, char SampleRate);
+    NrRecFrontend (EzString ConnectString, char SampleRate, EzString Driver, EzString Device);
     virtual ~NrRecFrontend (void);
 };
 
@@ -730,7 +730,7 @@ static void PutBitMap
 };
 
 
-NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
+NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate, EzString Driver, EzString Device)
     : XxWindow ( "NrRecFrontend", NULL, 100, 100
                , NrRecFrontendWidth, NrRecFrontendHeight
                , EzString ("NetStreamer ") + EzString (NR_VERSION)
@@ -740,7 +740,7 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
                   , ButtonPanelWidth, ButtonPanelHeight
                   )
     , NrRecConnection
-                  ( 0, SampleRate
+                  ( 0, SampleRate, Driver, Device
                   , EzString ("NrRecFrontend ") + EzString (NR_VERSION)
                   )
     , tUpButton   (&ButtonPanel, this, tUpButtonPosX,   tUpButtonPosY  )
@@ -1124,6 +1124,7 @@ void NrRecFrontend::RefreshMeters   (void)
 
     CurBufLevel = ((CurBufLevel << 2)  + GetBufRate () - CurBufLevel) >> 2;
     TmpAdjust   = (GetAdjustRate () * 1000) >> 10;
+cerr << TmpAdjust << endl;
 
     if (TmpAdjust < -90) TmpAdjust = -90;
 
@@ -1215,11 +1216,13 @@ int main (int argc, char *argv[])
     int      RetVal;
 
     {
-        EzString ConnectString, SampleRate;
+        EzString ConnectString, SampleRate, Driver, Device;
 
-        ConnectString = EzString (argc < 2 ? ":8888" : argv[1]);
+        ConnectString = EzString (argc < 2 ? ":8888"    : argv[1]);
+        Driver        = EzString (argc < 3 ? "Oss"      : argv[2]);
+        Device        = EzString (argc < 4 ? "/dev/dsp" : argv[3]);
 
-        new NrRecFrontend (ConnectString, 1);
+        new NrRecFrontend (ConnectString, 1, Driver, Device);
 
         RetVal = XxApplication::MainLoop ();
     };

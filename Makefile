@@ -62,16 +62,17 @@ LD = g++
 
 #SNAPSHOT = $(shell date +%y%m%d-)
 SNAPSHOT=
-#DEBUG= -g
-DEBUG=
+DEBUG= -g
+# DEBUG=
+OPTFLAGS=-O0
 
 NR_VERSION = 0.17
 INCLUDE = -I/usr/include/g++ -IlibXxWin/include -IlibXxStd/include \
 	-IlibFksUtil/include -IlibNrWin/include -IlibNrStd/include \
 	-IlibAdpcm/include
-CFLAGS = ${DEBUG} ${INCLUDE} -O3 -W -DNR_VERSION=\"${NR_VERSION}\"
+CFLAGS = ${DEBUG} ${INCLUDE} ${OPTFLAGS} -W -DNR_VERSION=\"${NR_VERSION}\"
 #LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
-LDFLAGS = ${DEBUG}
+LDFLAGS = ${DEBUG} -lpulse -lpulse-simple
 SOFLAGS = ${DEBUG} -shared
 MAKEFILE =
 
@@ -109,7 +110,7 @@ all:	.depend SubDirs socktest xtestSh xtest $(EXECS)
 SubDirs:
 	mkdir -p lib
 	for i in $(SUBDIRS); do ln -s $$i/lib/$$i.so .; test 0; done
-	for i in $(SUBDIRS); do DEBUG=${DEBUG} make -C $$i; done
+	for i in $(SUBDIRS); do DEBUG=${DEBUG} make -C $$i OPTFLAGS=${OPTFLAGS}; done
 
 archive:
 	strip $(EXECS)

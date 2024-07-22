@@ -49,7 +49,7 @@ enum {ModeDirectory, ModeDevice, ModeStdIn};
 int main (int argc, char *argv[])
 {
     EzString            Freq, Description, AddrPort, TapeDir, SampleRate;
-    EzString            InSampleRate;
+    EzString            InSampleRate, Driver, Device;
     NrTransConnection  *pTransConnection;
     EzString            Mode;
     int                 ModeCode;
@@ -90,6 +90,8 @@ int main (int argc, char *argv[])
     AddrPort     = argv [5];
     TapeDir      = (ModeCode == ModeDirectory ? argv[6] : "");
     InSampleRate = (ModeCode == ModeStdIn     ? argv[6] : "");
+    Driver       = (argc < 8 ? "Oss" : argv[7]);
+    Device       = (argc < 9 ? "/dev/dsp" : argv[8]);
 
     SampleRateIdx = -1;
 
@@ -118,7 +120,7 @@ int main (int argc, char *argv[])
         pTransConnection
             = new NrTransConnSoundDev
                   ( AddrPort, Freq, Description, AddInfo
-                  , SampleRateIdx
+                  , SampleRateIdx, Device
                   );
         break;
     case ModeStdIn:

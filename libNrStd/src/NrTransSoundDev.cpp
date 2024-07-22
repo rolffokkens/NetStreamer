@@ -13,9 +13,11 @@
 NrTransSoundDev::NrTransSoundDev
     ( NrTransConnection *pConnection
     , char SampleRate
+    , EzString Device
     )
     : NrTransSoundSource (pConnection)
     , Comp (3)
+    , XxSoundDevOSS (Device)
 {
     NrTransSoundDev::MuteFlag   = 1;
     NrTransSoundDev::SampleRate = SampleRate;
@@ -54,11 +56,13 @@ NrTransConnSoundDev::NrTransConnSoundDev
     , int Freq, EzString Description
     , EzString AddInfo
     , char SampleRate
+    , EzString Device
     )
     : NrTransConnection
           ( AddrPort, Freq, Description
           , AddInfo
-          , new NrTransSoundDev (this, SampleRate), SampleRate
+          , new NrTransSoundDev (this, SampleRate, Device)
+	  , SampleRate
           )
 {
 };

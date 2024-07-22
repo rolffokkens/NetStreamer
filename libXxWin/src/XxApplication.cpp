@@ -170,6 +170,7 @@ int XxApplication::HandleEvents (void)
         };
         if (!XPending (GetDisplay ())) break;
     };
+    return 0;
 };
 
 void XxApplication::Flush (void)

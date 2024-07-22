@@ -28,7 +28,8 @@ FEATURE_LEVEL = 1
 INCLUDE = -I/usr/include/g++ -Iinclude -I../libXxStd/include \
 	-I../libXxWin/include -I../libFksUtil/include -I../libAdpcm/include
 # DEBUG = -g
-CFLAGS = ${DEBUG} ${INCLUDE} -fPIC -O3 -W \
+OPTFLAGS = -O3
+CFLAGS =  ${DEBUG} ${INCLUDE} -fPIC ${OPTFLAGS} -W \
 	-DFEATURE_LEVEL=${FEATURE_LEVEL} -DNR_VERSION=\"${NR_VERSION}\"
 LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
 SOFLAGS = ${DEBUG} -shared

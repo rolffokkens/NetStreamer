@@ -33,7 +33,6 @@ static void ShowArgErrorMessage (EzString ProgName)
 int main (int argc, char *argv[])
 {
     NrRecConnection    *pTransConnection;
-    EzString            Freq, AddrPort;
     int                 RetVal;
 
     if (argc < 3) {
@@ -41,19 +40,27 @@ int main (int argc, char *argv[])
         return 1;
     };
 
-    Freq        = argv [1];
-    AddrPort    = argv [2];
+    {
+        EzString Freq, AddrPort, Driver, Device;
 
-    pTransConnection = new NrRecConnection
-                           ( Freq, 1
-                           , EzString ("NrReceiver ") + EzString (NR_VERSION)
-                           );
+        Freq        = argv [1];
+        AddrPort    = argv [2];
+        Driver      = EzString (argc < 4 ? "Oss"      : argv[3]);
+        Device      = EzString (argc < 5 ? "/dev/dsp" : argv[4]);
 
-    if (!pTransConnection->Connect (AddrPort)) {
-        cerr << "Cannot connect to " << AddrPort << endl;
-        delete pTransConnection;
-        return 1;
-    };
+
+        pTransConnection = new NrRecConnection
+                               ( Freq, 1, Device, Driver
+                               , EzString ("NrReceiver ") + EzString (NR_VERSION)
+                               );
+
+        if (!pTransConnection->Connect (AddrPort)) {
+            cerr << "Cannot connect to " << AddrPort << endl;
+            delete pTransConnection;
+            return 1;
+        };
+    }
+
     if (pTransConnection->SetMute (0)) {
         cerr << "Cannot open sound device " << endl;
         delete pTransConnection;

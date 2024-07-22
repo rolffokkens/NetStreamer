@@ -17,17 +17,17 @@
 
 using namespace std;
 
-NrRecSoundDev::NrRecSoundDev (NrRecConnection *pConnection)
+NrRecSoundDev::NrRecSoundDev (NrRecConnection *pConnection, EzString Driver) : XXSOUNDDEV (Driver)
 {
     NrRecSoundDev::pConnection = pConnection;
 };
 
 void NrRecSoundDev::IntHandleWrite (void)
 {
-    if (XxSoundDevOSS::GetOutBufSize () < AUDIO_BLOCK) {
-        XxSoundDevOSS::Write (pConnection->GetSound (AUDIO_BLOCK));
+    if (XXSOUNDDEV::GetOutBufSize () < AUDIO_BLOCK) {
+        XXSOUNDDEV::Write (pConnection->GetSound (AUDIO_BLOCK));
     };
-    XxSoundDevOSS::IntHandleWrite ();
+    XXSOUNDDEV::IntHandleWrite ();
 };
 
 int NrRecSoundDev::Open
@@ -37,7 +37,7 @@ int NrRecSoundDev::Open
     char *cp;
     int  OpenOk, Dummy = 0;
 
-    OpenOk = XxSoundDevOSS::Open (ModeRW, SampleSize, StereoFlag, Speed);
+    OpenOk = XXSOUNDDEV::Open (ModeRW, SampleSize, StereoFlag, Speed);
 
     if (OpenOk) {
         IntBufSize = GetIntOutBufFree ();
@@ -53,9 +53,9 @@ int NrRecSoundDev::Open
     return OpenOk;
 };
 
-NrRecConnection::NrRecConnection (int Freq, char SampleRate, EzString AddInfo)
+NrRecConnection::NrRecConnection (int Freq, char SampleRate, EzString Driver, EzString Device, EzString AddInfo)
     : NrRadioConnection ("Receiver")
-    , SoundDev (this)
+    , SoundDev (this, Device)
     , Pump (this, 50000, "Receiver", SampleRate)
 {
     NrRecConnection::Initialized    = 0;
@@ -271,6 +271,7 @@ void NrRecConnection::HandleRead (EzString Data)
 
     Pump.PutData (Data);
 
+    Pump.SetOsSoundDelay (SoundDev.GetIntOutDelay ());
     while (Pump.GetMessage (MsgCode, Data, XxTimer::GetMsCurTime ())) {
         HandleMessage (MsgCode, Data);
     };

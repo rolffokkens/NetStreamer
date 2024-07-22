@@ -1,5 +1,5 @@
 /*
- * file: XxSoundDevOSS.cpp 
+ * file: XxSoundDevPulse.cpp 
  *
  * This file is part of the XxStdLib library which is developed to support
  * the development of NetStreamer. This file is distributed under the
@@ -15,45 +15,155 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
+#include <signal.h>
+/*
 #include <sys/soundcard.h>
+*/
 #include <sys/ioctl.h>
 
-#include "XxSoundDevOSS.h"
+#include <pulse/simple.h>
+#include <pulse/error.h>
+
+#include "XxSoundDevPulse.h"
 
 using namespace std;
 
-XxSoundDevOSS::XxSoundDevOSS (EzString Device)
+
+#define BUFSIZE 1024
+
+int pulse_server_play(int datafd, int statusfd, const char *name, int SampleSize, int StereoFlag, int SampleRate, const char *dev) {
+    /* The Sample format to use */
+    static const pa_sample_spec ss = {
+        .format = (SampleSize == 16 ? PA_SAMPLE_S16LE : PA_SAMPLE_U8),
+        .rate = (uint32_t)SampleRate,
+        .channels = (uint8_t)(StereoFlag ? 2 : 1)
+    };
+ 
+    pa_simple *s = NULL;
+    int ret = 1;
+    int error;
+
+    if (dev[0] == '\0') dev = NULL;
+
+    /* Create a new playback stream */
+    if (!(s = pa_simple_new(NULL, name, PA_STREAM_PLAYBACK, dev, "playback", &ss, NULL, NULL, &error))) {
+        fprintf(stderr, __FILE__": pa_simple_new() failed: %s\n", pa_strerror(error));
+        goto finish;
+    }
+ 
+    for (;;) {
+        uint8_t buf[BUFSIZE];
+        ssize_t r;
+	int lat;
+ 
+        pa_usec_t latency;
+ 
+        if ((latency = pa_simple_get_latency(s, &error)) == (pa_usec_t) -1) {
+            fprintf(stderr, __FILE__": pa_simple_get_latency() failed: %s\n", pa_strerror(error));
+            goto finish;
+        }
+	if (latency) {
+            lat = latency;
+            write(statusfd, (char*)(&lat), sizeof(lat));
+        }
+/* 
+        fprintf(stderr, "%0.0f usec    \n", (float)latency);
+*/ 
+        /* Read some data ... */
+        if ((r = read(datafd, buf, sizeof(buf))) <= 0) {
+            if (r == 0) /* EOF */
+                break;
+ 
+            fprintf(stderr, __FILE__": read() failed: %s\n", strerror(errno));
+            goto finish;
+        }
+ 
+        /* ... and play it */
+        if (pa_simple_write(s, buf, (size_t) r, &error) < 0) {
+            fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
+            goto finish;
+        }
+    }
+ 
+    /* Make sure that every single sample was played */
+    if (pa_simple_drain(s, &error) < 0) {
+        fprintf(stderr, __FILE__": pa_simple_drain() failed: %s\n", pa_strerror(error));
+        goto finish;
+    }
+ 
+    ret = 0;
+ 
+finish:
+ 
+    if (s)
+        pa_simple_free(s);
+ 
+    return ret;
+}
+
+
+
+
+
+
+XxSoundDevPulse::XxSoundDevPulse (EzString Device)
 {
-    ModeRW                = ModeRead;
-    IntBufSize            = -1;
-    FragSize              = -1;
-    MaxLevel              = 0;
-    SampleRate            = 0;
-    IntStereo             = 0;
-    IntSampleBytes        = 0;
-    XxSoundDevOSS::Device = Device;
+    ModeRW                  = ModeRead;
+    IntBufSize              = -1;
+    FragSize                = -1;
+    MaxLevel                = 0;
+    SampleRate              = 0;
+    IntStereo               = 0;
+    IntSampleBytes          = 0;
+    ChildPID                = -1;
+    StatusFd                = -1;
+    XxSoundDevPulse::Device = Device;
+    Latency                 = 0;
+    PipeLatency             = 0;
 };
 
-void XxSoundDevOSS::IntClose (void)
+void XxSoundDevPulse::IntClose (void)
 {
+/*
     if (GetStatus () == StatOpen) {
         ioctl (GetFd (), SNDCTL_DSP_RESET, NULL);
     };
+*/
+    if (ChildPID != -1) {
+        kill (ChildPID, SIGKILL);
+        ChildPID = -1;
+    };
 };
 
-XxSoundDevOSS::~XxSoundDevOSS (void)
+XxSoundDevPulse::~XxSoundDevPulse (void)
 {
     IntClose ();
 };
 
 
-void XxSoundDevOSS::Close (void)
+void XxSoundDevPulse::Write (EzString Data)
+{
+    ssize_t siz;
+    int lat;
+
+    XxStream::Write (Data);
+    for (;;) {
+        siz = read (StatusFd, (void *)(&lat), sizeof(lat));
+	if (siz == -1) break;
+        if (siz == sizeof(lat)) {
+            Latency = (Latency * 7 + lat) / 8;
+        }
+    }
+};
+
+
+void XxSoundDevPulse::Close (void)
 {
     IntClose ();
     XxStream::Close ();
 };
 
-EzString XxSoundDevOSS::ProcessReadData  (EzString Data)
+EzString XxSoundDevPulse::ProcessReadData  (EzString Data)
 {
     short      *pOutBuf16, *pO16;
     char       *pOutBuf8,  *pO8;
@@ -196,7 +306,7 @@ EzString XxSoundDevOSS::ProcessReadData  (EzString Data)
     return RetVal;
 };
 
-EzString XxSoundDevOSS::ProcessWriteData  (EzString Data)
+EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
 {
     const short *pShort;
     short       Sample;
@@ -243,8 +353,12 @@ EzString XxSoundDevOSS::ProcessWriteData  (EzString Data)
     return RetVal;
 };
 
-int XxSoundDevOSS::GetWriteChunkSize (EzString Data)
+int XxSoundDevPulse::GetWriteChunkSize (EzString Data)
 {
+    int RetVal;
+    RetVal = Data.Length ();
+    return (RetVal > 2048 ? 2048 : RetVal);
+/*
     struct audio_buf_info BufInfo;
     int RetVal;
 
@@ -255,24 +369,32 @@ int XxSoundDevOSS::GetWriteChunkSize (EzString Data)
     if (RetVal > BufInfo.bytes) RetVal = BufInfo.bytes;
 
     return RetVal;
+*/
 };
 
-int XxSoundDevOSS::GetIntOutBufFree (void)
+int XxSoundDevPulse::GetIntOutBufFree (void)
 {
+    return 2048;
+/*
     int Fd = GetFd ();
     struct audio_buf_info BufInfo;
 
     ioctl (Fd, SNDCTL_DSP_GETOSPACE, &BufInfo);
 
     return BufInfo.bytes;
+*/
 };
 
-int XxSoundDevOSS::GetIntOutBufSize (void)
+int XxSoundDevPulse::GetIntOutBufSize (void)
 {
+    return 2048;
+/*
     return IntBufSize - GetIntOutBufFree ();
+*/
 };
 
-int XxSoundDevOSS::SetSampleSize (int Fd, int SampleSize)
+/*
+int XxSoundDevPulse::SetSampleSize (int Fd, int SampleSize)
 {
     int Size = SampleSize;
 
@@ -291,7 +413,7 @@ cerr << "Sample Size Selection Error" << endl;
     return 1;
 };
 
-int XxSoundDevOSS::SetStereo (int Fd, int StereoFlag)
+int XxSoundDevPulse::SetStereo (int Fd, int StereoFlag)
 {
     int Stereo;
 
@@ -313,7 +435,7 @@ cerr << "Stereo Selection Error" << endl;
     return 1;
 };
 
-int XxSoundDevOSS::SetSpeed (int Fd, int SampleRate)
+int XxSoundDevPulse::SetSpeed (int Fd, int SampleRate)
 {
     int RetVal;
 
@@ -332,16 +454,44 @@ cerr << "Speed Selection Error" << endl;
 
     return RetVal;
 };
+*/
 
-int XxSoundDevOSS::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed)
+int XxSoundDevPulse::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int SampleRate)
 {
+/*
     struct audio_buf_info BufInfo;
-    int  Fd, oMode;
+*/
+    int  Fd, ChildFd, oMode;
     char buf[128];
+    int datafd[2], statusfd[2], pid;
+    int pipe_size;
 
     Close ();
 
-    XxSoundDevOSS::ModeRW = ModeRW;
+    XxSoundDevPulse::ModeRW     = ModeRW;
+    XxSoundDevPulse::SampleRate = SampleRate;
+
+    pipe(datafd);
+    pipe(statusfd);
+
+    Fd      = datafd[ModeRW == ModeRead ? 0 : 1];
+    ChildFd = datafd[ModeRW == ModeRead ? 1 : 0];
+
+    pid = fork ();
+    if (pid == 0) {
+        exit (pulse_server_play (ChildFd, statusfd[1], "XxSoundDevPulse", SampleSize, StereoFlag, SampleRate, Device));
+    }
+    ChildPID = pid;
+    StatusFd = statusfd[0];
+
+    fcntl (StatusFd, F_SETFL, O_NONBLOCK);
+    pipe_size = fcntl (Fd, F_SETPIPE_SZ, 8000);
+
+    PipeLatency = pipe_size * 1000 / (SampleSize/8) / SampleRate / (StereoFlag ? 2 : 1);
+
+    cerr << "fcnt:" << pipe_size << ":" << PipeLatency << endl;
+
+/*
     oMode = (ModeRW == ModeRead ? O_RDONLY : O_WRONLY);
     Fd = open (Device, oMode | O_NONBLOCK, 0);
 
@@ -365,13 +515,14 @@ int XxSoundDevOSS::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Spe
     FragSize       = BufInfo.fragsize;
     SampleRate     = Speed;
 
+*/
     SetFd (Fd);
     SetStatus (StatOpen);
 
     return 1;
 };
 
-int XxSoundDevOSS::GetMaxLevel (void)
+int XxSoundDevPulse::GetMaxLevel (void)
 {
     int RetVal;
 
@@ -381,14 +532,15 @@ int XxSoundDevOSS::GetMaxLevel (void)
     return RetVal;
 };
 
-int XxSoundDevOSS::GetIntOutDelay (void)
+int XxSoundDevPulse::GetIntOutDelay (void)
 {
-    int delay =   (IntBufSize * 1000)
-                / ((IntStereo ? 2 : 1) * IntSampleBytes * SampleRate);
+    return (Latency/1000 + PipeLatency);
 
-    cerr << "XxSoundDevOSS::GetIntOutDelay " << delay << endl;
-
-    return delay;
+    return Latency == 0 ? 200 : Latency / 1000;
+/*
+    return    (IntBufSize * 1000)
+            / ((IntStereo ? 2 : 1) * IntSampleBytes * SampleRate);
+*/
 };
 
 #endif
