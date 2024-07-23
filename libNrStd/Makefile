@@ -23,7 +23,7 @@
 #                  speed better now.
 #
 
-NR_VERSION = 0.17
+NR_VERSION = 0.18
 FEATURE_LEVEL = 1
 INCLUDE = -I/usr/include/g++ -Iinclude -I../libXxStd/include \
 	-I../libXxWin/include -I../libFksUtil/include -I../libAdpcm/include

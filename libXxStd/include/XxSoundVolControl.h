@@ -1,5 +1,5 @@
 /*
- * file: XxSoundDevPulse.h
+ * file: XxSoundVolControl.h
  *
  * This file is part of the XxStdLib library which is developed to support
  * the development of NetStreamer. This file is distributed under the
@@ -9,18 +9,19 @@
  *
  */
 
-#ifndef H_XX_SOUNDDEVPULSE
+#ifndef H_XX_SOUNDDEV
 
-#define H_XX_SOUNDDEVPULSE
+#define H_XX_SOUNDDEV
 
 #include <unistd.h>
 
 #ifndef __sparc__
 
-#include "XxSoundVolControl.h"
+#include "XxStream.h"
 
-class XxSoundDevPulse : virtual public XxSoundVolControl {
+class XxSoundVolControl : virtual public XxStream {
 private:
+/*
     MODE_RW  ModeRW;
     int      IntBufSize;
     int      FragSize;
@@ -39,37 +40,34 @@ private:
     int      Emul16;
     int      EmulStereo;
     int      EmulMono;
-
+*/
+    int      Volume;
+    int      MaxLevel;
+/*
     void IntClose (void);
     int ChildGone (void);
+*/
 protected:
+/*
     virtual int GetWriteChunkSize (EzString Data);
+*/
 
+    EzString AdjustVolume (EzString Data);
+/*
     virtual EzString ProcessReadData  (EzString Data);
     virtual EzString ProcessWriteData  (EzString Data);
-
     virtual void Write (EzString Data);
-
     virtual void Close (void);
+*/
 public:
-    XxSoundDevPulse (EzString Device);
+    XxSoundVolControl (void);
 
-    virtual ~XxSoundDevPulse (void);
+    virtual ~XxSoundVolControl (void) {};
 
-    virtual void GetRWFlags (int &rFlag, int &wFlag);
+    int  GetVolume (void) { return Volume; };
+    void SetVolume (int Volume);
 
-    virtual int Open
-        (MODE_RW ModeRW, int SampleSize, int StereoFlag, int SampleRate);
-
-    MODE_RW GetOpenMode (void) { return ModeRW; };
-
-    virtual int GetIntOutBufSize (void);
-
-    virtual int GetIntOutBufFree (void);
-
-    virtual int GetIntOutDelay (void);
-
-    virtual int IsOpen (void) { return !ChildGone(); };
+    int GetMaxLevel (void);
 };
 
 #endif

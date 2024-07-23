@@ -32,7 +32,7 @@ MAKEFILE =
 
 XXSTDOBJS = \
 	src/XxSoundDevOSS.o src/XxSoundDevPulse.o src/XxSocket.o src/XxStream.o src/XxBlocker.o \
-	src/XxMixerOSS.o src/XxTimer.o src/XxBase.o src/XxSerial.o src/XxStdio.o
+	src/XxMixerOSS.o src/XxTimer.o src/XxBase.o src/XxSerial.o src/XxStdio.o src/XxSoundVolControl.o
 
 .SUFFIXES:
 .SUFFIXES: .cpp $(SUFFIXES)

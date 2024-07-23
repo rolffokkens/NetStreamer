@@ -102,7 +102,6 @@ XxSoundDevPulse::XxSoundDevPulse (EzString Device)
     ModeRW                  = ModeRead;
     IntBufSize              = -1;
     FragSize                = -1;
-    MaxLevel                = 0;
     SampleRate              = 0;
     IntStereo               = 0;
     IntSampleBytes          = 0;
@@ -111,7 +110,6 @@ XxSoundDevPulse::XxSoundDevPulse (EzString Device)
     XxSoundDevPulse::Device = Device;
     Latency                 = 0;
     PipeLatency             = 0;
-    Volume                  = 65536;
 };
 
 void XxSoundDevPulse::IntClose (void)
@@ -346,7 +344,7 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
 {
     const short *pShort;
     short       Sample;
-    int         i, Size, Max;
+    int         i, Size;
     EzString    RetVal;
 
     //
@@ -356,9 +354,10 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
     // ToDo: use memcpy first when odd!
     //       8 bits samples???
 
+    Data = XxSoundVolControl::AdjustVolume (Data);
+
     pShort = (const short *)(Data.Text ());
     Size   = (Data.Length () >> 1);
-    Max    = MaxLevel;
 
     if (Emul16) {
         char *pOutBuf, *pOut;
@@ -367,8 +366,7 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
         pOut    = pOutBuf;
 
         for (i = Size; i > 0; i--) {
-            Sample = (*pShort++ * Volume) >> 16;
-            if (Sample > Max) Max = Sample;
+            Sample = *pShort++;
             *pOut++ = (Sample >> 8) ^ 0x80;
         };
 
@@ -382,8 +380,7 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
         pOut    = pOutBuf;
 
         for (i = Size; i > 0; i--) {
-            Sample = (*pShort++ * Volume) >> 16;
-            if (Sample > Max) Max = Sample;
+            Sample = *pShort++;
             *pOut++ = Sample;
         };
 /*
@@ -394,8 +391,6 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
         delete [] pOutBuf;
     };
     RetVal = XxStream::ProcessWriteData (RetVal);
-
-    MaxLevel = Max;
 
     return RetVal;
 };
@@ -452,21 +447,6 @@ int XxSoundDevPulse::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int S
 
     return 1;
 };
-
-int XxSoundDevPulse::GetMaxLevel (void)
-{
-    int RetVal;
-
-    RetVal   = MaxLevel;
-    MaxLevel = 0;
-
-    return RetVal;
-};
-
-void XxSoundDevPulse::SetVolume (int Volume)
-{
-    XxSoundDevPulse::Volume = Volume;
-}
 
 int XxSoundDevPulse::GetIntOutDelay (void)
 {
