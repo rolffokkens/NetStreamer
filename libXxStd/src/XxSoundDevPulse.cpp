@@ -370,27 +370,12 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
             *pOut++ = (Sample >> 8) ^ 0x80;
         };
 
-        RetVal = EzString (pOutBuf, Size);
-
-        delete [] pOutBuf;
-    } else {
-        short *pOutBuf, *pOut;
-
-        pOutBuf = new short[Size];
-        pOut    = pOutBuf;
-
-        for (i = Size; i > 0; i--) {
-            Sample = *pShort++;
-            *pOut++ = Sample;
-        };
-/*
-        RetVal = Data;
-*/
-        RetVal = EzString ((char *)pOutBuf, Size * 2);
+        Data = EzString (pOutBuf, Size);
 
         delete [] pOutBuf;
     };
-    RetVal = XxStream::ProcessWriteData (RetVal);
+
+    RetVal = XxStream::ProcessWriteData (Data);
 
     return RetVal;
 };
@@ -420,6 +405,8 @@ int XxSoundDevPulse::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int S
     int pipe_size;
 
     Close ();
+
+    Emul16 = SampleSize != 16;
 
     XxSoundDevPulse::ModeRW     = ModeRW;
     XxSoundDevPulse::SampleRate = SampleRate;

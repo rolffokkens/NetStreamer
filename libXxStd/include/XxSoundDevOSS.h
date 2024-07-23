@@ -17,7 +17,9 @@
 
 #include "XxStream.h"
 
-class XxSoundDevOSS : virtual public XxStream {
+#include "XxSoundVolControl.h"
+
+class XxSoundDevOSS : virtual public XxSoundVolControl {
 private:
     MODE_RW  ModeRW;
     int      IntBufSize;
@@ -33,8 +35,6 @@ private:
     int      Emul16;
     int      EmulStereo;
     int      EmulMono;
-
-    int      MaxLevel;
 
     int SetSampleSize (int Fd, int SampleSize);
     int SetStereo     (int Fd, int StereoFlag);
