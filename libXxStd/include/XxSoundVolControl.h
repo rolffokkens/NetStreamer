@@ -21,44 +21,10 @@
 
 class XxSoundVolControl : virtual public XxStream {
 private:
-/*
-    MODE_RW  ModeRW;
-    int      IntBufSize;
-    int      FragSize;
-    int      SampleRate;
-    int      IntStereo;
-    int      IntSampleBytes;
-    EzString Device;
-    pid_t    ChildPID;
-    pid_t    StatusFd;
-    int      Latency;
-    int      PipeLatency;
-
-    int      Deliv16;
-    int      DelivStereo;
-
-    int      Emul16;
-    int      EmulStereo;
-    int      EmulMono;
-*/
     int      Volume;
     int      MaxLevel;
-/*
-    void IntClose (void);
-    int ChildGone (void);
-*/
 protected:
-/*
-    virtual int GetWriteChunkSize (EzString Data);
-*/
-
     EzString AdjustVolume (EzString Data);
-/*
-    virtual EzString ProcessReadData  (EzString Data);
-    virtual EzString ProcessWriteData  (EzString Data);
-    virtual void Write (EzString Data);
-    virtual void Close (void);
-*/
 public:
     XxSoundVolControl (void);
 
