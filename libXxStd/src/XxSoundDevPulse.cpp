@@ -21,6 +21,7 @@
 
 #include <pulse/simple.h>
 #include <pulse/error.h>
+#include <pulse/volume.h>
 
 #include "XxSoundDevPulse.h"
 
@@ -48,7 +49,7 @@ int pulse_server_play(int datafd, int statusfd, const char *name, int SampleSize
         fprintf(stderr, __FILE__": pa_simple_new() failed: %s\n", pa_strerror(error));
         goto finish;
     }
- 
+
     for (;;) {
         uint8_t buf[BUFSIZE];
         ssize_t r;
@@ -110,6 +111,7 @@ XxSoundDevPulse::XxSoundDevPulse (EzString Device)
     XxSoundDevPulse::Device = Device;
     Latency                 = 0;
     PipeLatency             = 0;
+    Volume                  = 65536;
 };
 
 void XxSoundDevPulse::IntClose (void)
@@ -365,7 +367,7 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
         pOut    = pOutBuf;
 
         for (i = Size; i > 0; i--) {
-            Sample = *pShort++;
+            Sample = (*pShort++ * Volume) >> 16;
             if (Sample > Max) Max = Sample;
             *pOut++ = (Sample >> 8) ^ 0x80;
         };
@@ -374,11 +376,22 @@ EzString XxSoundDevPulse::ProcessWriteData  (EzString Data)
 
         delete [] pOutBuf;
     } else {
+        short *pOutBuf, *pOut;
+
+        pOutBuf = new short[Size];
+        pOut    = pOutBuf;
+
         for (i = Size; i > 0; i--) {
-            Sample = *pShort++;
+            Sample = (*pShort++ * Volume) >> 16;
             if (Sample > Max) Max = Sample;
+            *pOut++ = Sample;
         };
+/*
         RetVal = Data;
+*/
+        RetVal = EzString ((char *)pOutBuf, Size * 2);
+
+        delete [] pOutBuf;
     };
     RetVal = XxStream::ProcessWriteData (RetVal);
 
@@ -392,31 +405,11 @@ int XxSoundDevPulse::GetWriteChunkSize (EzString Data)
     int RetVal;
     RetVal = Data.Length ();
     return (RetVal > 2048 ? 2048 : RetVal);
-/*
-    struct audio_buf_info BufInfo;
-    int RetVal;
-
-    ioctl (GetFd (), SNDCTL_DSP_GETOSPACE, &BufInfo);
-
-    RetVal = Data.Length ();
-
-    if (RetVal > BufInfo.bytes) RetVal = BufInfo.bytes;
-
-    return RetVal;
-*/
 };
 
 int XxSoundDevPulse::GetIntOutBufFree (void)
 {
     return 2048;
-/*
-    int Fd = GetFd ();
-    struct audio_buf_info BufInfo;
-
-    ioctl (Fd, SNDCTL_DSP_GETOSPACE, &BufInfo);
-
-    return BufInfo.bytes;
-*/
 };
 
 int XxSoundDevPulse::GetIntOutBufSize (void)
@@ -426,9 +419,6 @@ int XxSoundDevPulse::GetIntOutBufSize (void)
 
 int XxSoundDevPulse::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int SampleRate)
 {
-/*
-    struct audio_buf_info BufInfo;
-*/
     int  Fd, ChildFd, oMode;
     char buf[128];
     int datafd[2], statusfd[2], pid;
@@ -472,6 +462,11 @@ int XxSoundDevPulse::GetMaxLevel (void)
 
     return RetVal;
 };
+
+void XxSoundDevPulse::SetVolume (int Volume)
+{
+    XxSoundDevPulse::Volume = Volume;
+}
 
 int XxSoundDevPulse::GetIntOutDelay (void)
 {

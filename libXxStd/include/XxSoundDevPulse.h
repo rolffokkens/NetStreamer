@@ -40,6 +40,7 @@ private:
     int      EmulStereo;
     int      EmulMono;
 
+    int      Volume;
     int      MaxLevel;
 
     void IntClose (void);
@@ -70,6 +71,9 @@ public:
     virtual int GetIntOutBufFree (void);
 
     virtual int GetIntOutDelay (void);
+
+    int  GetVolume (void) { return Volume; };
+    void SetVolume (int Volume);
 
     int GetMaxLevel (void);
 

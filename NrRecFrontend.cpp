@@ -32,7 +32,6 @@
 #include "XxLcdScrollDisplay.h"
 #include "XxFlashLight.h"
 #include "XxTimer.h"
-#include "XxMixer.h"
 #include "Nr8Log.h"
 #include "NrGraphicAnalyzer.h"
 #include "NrReceiver.h"
@@ -430,7 +429,6 @@ class NrRecFrontend : public XxWindow, public NrRecConnection {
     class TuneDownButton;
     class RecordButton;
     class MuteButton;
-    class VolMixer;
     class VolUpButton;
     class VolDownButton;
     class MemoryButton;
@@ -440,7 +438,6 @@ class NrRecFrontend : public XxWindow, public NrRecConnection {
     friend TuneDownButton;
     friend RecordButton;
     friend MuteButton;
-    friend VolMixer;
     friend VolUpButton;
     friend VolDownButton;
     friend MemoryButton;
@@ -466,17 +463,7 @@ private:
     void IntTuneUp   (void);
     void IntTuneDown (void);
 
-    class VolMixer : public XxMixer {
-    private:
-        NrRecFrontend *pParent;
-    protected:
-        void HandleVolume (char lVolume, char rVolume);
-    public:
-        VolMixer (NrRecFrontend *pParent) : XxMixer (200) {
-            VolMixer::pParent = pParent;
-        };
-        virtual ~VolMixer (void) { };
-    };
+    int Volume;
 
     class VolUpButton : public NrPulseButton {
     private:
@@ -651,8 +638,6 @@ private:
         virtual ~RecordButton (void) { };
     };
 
-    VolMixer           Mixer;
-
     XxPanel            ButtonPanel;
 
     FrontendTimer      RefreshTimer;
@@ -817,11 +802,10 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate, EzString 
                , XxRed4, XxRed1, XxBlack
                , 500
                )
-    , Mixer    ( this
-               )
 {
     RecFlag   = 0;
     CurPreset = 0;
+    Volume    = 80;
 
     if (!Connect (ConnectString)) {
         cerr << "Cannot Connect to " << ConnectString << endl;
@@ -954,6 +938,8 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate, EzString 
 
     SetBackground (XxGray1); // qqqq
 
+    VolMeter.SetCurVal (Volume);
+
     SetMute (0);
 };
 
@@ -980,7 +966,6 @@ void NrRecFrontend::SetMessage (EzString Mesg)
         UpdateInfoDisplay ();
     };
 };
-
 
 void NrRecFrontend::HandleMissData (int Flag)
 {
@@ -1052,15 +1037,12 @@ static int TmpCurVal   = 0;
 
 void NrRecFrontend::DoVolAdjust (int AdjVal)
 {
-    char lVol, rVol;
+    Volume += AdjVal;
+    if (Volume < 0) Volume = 0;
+    if (Volume > 99) Volume = 99;
 
-    Mixer.GetVolume (lVol, rVol);
-
-    if (lVol > rVol) rVol = lVol;
-
-    rVol += AdjVal;
-
-    Mixer.SetVolume (rVol, rVol);
+    SetVolume (1000 + (Volume * Volume * 64535) / 10000);
+    VolMeter.SetCurVal (Volume);
 };
 
 void NrRecFrontend::DoRecord (void)
@@ -1131,11 +1113,6 @@ void NrRecFrontend::RefreshMeters   (void)
     AdjustMeter.SetCurVal (TmpAdjust);
 
     Analyzer.Refresh (MsCurTime);
-};
-
-void NrRecFrontend::VolMixer::HandleVolume (char lVolume, char rVolume)
-{
-    pParent->VolMeter.SetCurVal (lVolume);
 };
 
 template <>

@@ -122,6 +122,9 @@ protected:
     virtual void HandlePrepare   (int Flag);
     virtual void HandleExpansion (int Expansion);
     virtual void HandleMute      (int Flag);
+
+    int GetVolume (void) { return SoundDev.GetVolume (); };
+    void SetVolume (int Volume) { SoundDev.SetVolume (Volume); };
 public:
     NrRecConnection (int Freq, char SampleRate, EzString Driver, EzString Device, EzString AddInfo);
 

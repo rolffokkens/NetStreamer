@@ -3,7 +3,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "XxMixer.h"
+#include "XxMixerOSS.h"
 
 int XxMixer::IntGetVolume (void)
 {
