@@ -43,6 +43,7 @@ private:
     int      MaxLevel;
 
     void IntClose (void);
+    int ChildGone (void);
 protected:
     virtual int GetWriteChunkSize (EzString Data);
 
@@ -57,6 +58,8 @@ public:
 
     virtual ~XxSoundDevPulse (void);
 
+    virtual void GetRWFlags (int &rFlag, int &wFlag);
+
     virtual int Open
         (MODE_RW ModeRW, int SampleSize, int StereoFlag, int SampleRate);
 
@@ -69,6 +72,8 @@ public:
     virtual int GetIntOutDelay (void);
 
     int GetMaxLevel (void);
+
+    virtual int IsOpen (void) { return !ChildGone(); };
 };
 
 #endif

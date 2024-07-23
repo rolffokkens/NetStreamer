@@ -1124,7 +1124,6 @@ void NrRecFrontend::RefreshMeters   (void)
 
     CurBufLevel = ((CurBufLevel << 2)  + GetBufRate () - CurBufLevel) >> 2;
     TmpAdjust   = (GetAdjustRate () * 1000) >> 10;
-cerr << TmpAdjust << endl;
 
     if (TmpAdjust < -90) TmpAdjust = -90;
 
@@ -1215,7 +1214,7 @@ int main (int argc, char *argv[])
 {
     int      RetVal;
 
-    {
+    try {
         EzString ConnectString, SampleRate, Driver, Device;
 
         ConnectString = EzString (argc < 2 ? ":8888"    : argv[1]);
@@ -1225,6 +1224,9 @@ int main (int argc, char *argv[])
         new NrRecFrontend (ConnectString, 1, Driver, Device);
 
         RetVal = XxApplication::MainLoop ();
+    } catch (Exception e) {
+        cerr << e.GetText() << endl;
+	RetVal = 1;
     };
 
     return RetVal;

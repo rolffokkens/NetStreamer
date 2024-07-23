@@ -269,6 +269,8 @@ void NrRecConnection::HandleRead (EzString Data)
 {
     NrMsgCode    MsgCode;
 
+    if (!SoundDev.IsOpen()) SetMute(1);
+
     Pump.PutData (Data);
 
     Pump.SetOsSoundDelay (SoundDev.GetIntOutDelay ());

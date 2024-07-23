@@ -144,8 +144,6 @@ void NrSpeedBuf::PutSound (EzString Sound, long MsCurTime, int Expansion)
 
     if (State == Off) return;
 
-cerr << "GetBufUsed: " << GetBufUsed () << endl;
-
     AdjustAvg (AvgBufSize, GetBufUsed (), 10);
 
     SoundSize = NrFifo::PutSound
@@ -358,8 +356,6 @@ int NrSpeedBuf::GetAdjustRate (void)
 
     tC = AvgCounter << 8;
     tD = AvgDivisor;
-
-cerr << "GetAdjustRate:" << AvgCounter << "," << AvgDivisor << endl;
 
     return tC / tD;
 };

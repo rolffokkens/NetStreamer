@@ -383,10 +383,8 @@ int XxSoundDevOSS::GetMaxLevel (void)
 
 int XxSoundDevOSS::GetIntOutDelay (void)
 {
-    int delay =   (IntBufSize * 1000)
-                / ((IntStereo ? 2 : 1) * IntSampleBytes * SampleRate);
-
-    cerr << "XxSoundDevOSS::GetIntOutDelay " << delay << endl;
+    int div = (IntStereo ? 2 : 1) * IntSampleBytes * SampleRate;
+    int delay = div ? (IntBufSize * 1000) / div : 1000;
 
     return delay;
 };

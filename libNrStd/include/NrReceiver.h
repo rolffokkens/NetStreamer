@@ -35,10 +35,6 @@ private:
 
     virtual void IntHandleWrite (void);
 public:
-    virtual void GetRWFlags (int &rFlag, int &wFlag) {
-        rFlag = 1;
-        wFlag = 1;
-    };
     virtual int Open
         (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed);
 };

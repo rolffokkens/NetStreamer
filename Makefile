@@ -64,7 +64,7 @@ LD = g++
 SNAPSHOT=
 DEBUG= -g
 # DEBUG=
-OPTFLAGS=-O0
+OPTFLAGS=-O3
 
 NR_VERSION = 0.17
 INCLUDE = -I/usr/include/g++ -IlibXxWin/include -IlibXxStd/include \

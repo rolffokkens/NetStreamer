@@ -20,7 +20,7 @@ class XxSelector;
 class XxBlocker : public virtual XxBase {
     friend XxSelector;
 public:
-    enum XxStatus { StatOpen, StatClosed };
+    enum XxStatus { StatOpen = 0, StatClosed = 1};
     enum XxAction { ActNone = 0, ActRead = 1, ActWrite = 2, ActAccept = 4 };
 
     typedef BlSet<XxBlocker> XxBlockerSet;

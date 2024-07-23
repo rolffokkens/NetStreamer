@@ -50,6 +50,8 @@ void XxApplication::Init (void)
     if (InitDone) return;
 
     XxDisplay  = XOpenDisplay  (NULL);
+    if (!XxDisplay) throw Exception("Display error: Connection to X server failed");
+
     XxScreen   = DefaultScreen (XxDisplay);
 
     XxWidth    = DisplayWidth  (XxDisplay, XxScreen);

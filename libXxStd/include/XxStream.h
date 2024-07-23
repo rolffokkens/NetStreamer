@@ -53,6 +53,8 @@ public:
 
     long GetInCount  (void) { return InCount;  };
     long GetOutCount (void) { return OutCount; };
+
+    virtual int IsOpen (void) { return 1; };
 };
 
 #endif

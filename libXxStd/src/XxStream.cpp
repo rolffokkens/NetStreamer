@@ -15,7 +15,11 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include <iostream>
+
 #include "XxStream.h"
+
+using namespace std;
 
 XxStream::XxStream (void)
 {
