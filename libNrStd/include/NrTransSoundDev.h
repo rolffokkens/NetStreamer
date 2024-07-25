@@ -30,7 +30,7 @@ private:
 protected:
     virtual EzString ProcessReadData  (EzString Data);
 public:
-    NrTransSoundDev (NrTransConnection *pConnection, char SampleRate, EzString Device);
+    NrTransSoundDev (NrTransConnection *pConnection, char SampleRate, EzString Device, EzString AppName);
     virtual ~NrTransSoundDev (void);
     virtual void SetMute (int Flag);
     virtual void Start (void);
@@ -40,7 +40,8 @@ class NrTransConnSoundDev : public NrTransConnection {
 public:
     NrTransConnSoundDev
         ( EzString AddrPort, int Freq, EzString Description
-        , EzString AddInfo,  char SampleRate, EzString Device
+        , EzString AddInfo,  char SampleRate
+	, EzString Device,   EzString AppName
         );
     virtual ~NrTransConnSoundDev
         (void);

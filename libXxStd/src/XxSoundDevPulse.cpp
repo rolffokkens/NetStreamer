@@ -97,7 +97,7 @@ finish:
     return ret;
 }
 
-XxSoundDevPulse::XxSoundDevPulse (EzString Device)
+XxSoundDevPulse::XxSoundDevPulse (EzString Device, EzString AppName) : XxSoundVolControl (AppName)
 {
     ModeRW                  = ModeRead;
     IntBufSize              = -1;
@@ -419,7 +419,7 @@ int XxSoundDevPulse::Open (MODE_RW ModeRW, int SampleSize, int StereoFlag, int S
 
     pid = fork ();
     if (pid == 0) {
-        exit (pulse_server_play (ChildFd, statusfd[1], "XxSoundDevPulse", SampleSize, StereoFlag, SampleRate, Device));
+        exit (pulse_server_play (ChildFd, statusfd[1], AppName, SampleSize, StereoFlag, SampleRate, Device));
     }
     ChildPID = pid;
     StatusFd = statusfd[0];

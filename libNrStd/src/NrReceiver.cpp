@@ -17,7 +17,7 @@
 
 using namespace std;
 
-NrRecSoundDev::NrRecSoundDev (NrRecConnection *pConnection, EzString Driver) : XXSOUNDDEV (Driver)
+NrRecSoundDev::NrRecSoundDev (NrRecConnection *pConnection, EzString Device, EzString AppName) : XXSOUNDDEV (Device, AppName)
 {
     NrRecSoundDev::pConnection = pConnection;
 };
@@ -55,7 +55,7 @@ int NrRecSoundDev::Open
 
 NrRecConnection::NrRecConnection (int Freq, char SampleRate, EzString Driver, EzString Device, EzString AddInfo)
     : NrRadioConnection ("Receiver")
-    , SoundDev (this, Device)
+    , SoundDev (this, Device, AddInfo)
     , Pump (this, 50000, "Receiver", SampleRate)
 {
     NrRecConnection::Initialized    = 0;

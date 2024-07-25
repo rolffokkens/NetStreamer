@@ -22,7 +22,7 @@
 
 using namespace std;
 
-XxSoundDevOSS::XxSoundDevOSS (EzString Device)
+XxSoundDevOSS::XxSoundDevOSS (EzString Device, EzString AppName = "XxSoundDevOSS") : XxSoundVolControl (AppName)
 {
     ModeRW                = ModeRead;
     IntBufSize            = -1;

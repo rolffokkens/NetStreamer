@@ -19,7 +19,7 @@
 
 #include "XxSoundVolControl.h"
 
-class XxSoundDevOSS : virtual public XxSoundVolControl {
+class XxSoundDevOSS : public XxSoundVolControl {
 private:
     MODE_RW  ModeRW;
     int      IntBufSize;
@@ -49,7 +49,7 @@ protected:
 
     virtual void Close (void);
 public:
-    XxSoundDevOSS (EzString Device);
+    XxSoundDevOSS (EzString Device, EzString AppName);
 
     virtual ~XxSoundDevOSS (void);
 

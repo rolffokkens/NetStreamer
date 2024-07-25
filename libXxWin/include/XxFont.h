@@ -23,6 +23,8 @@ class XxGC;
 class XxFont : public XxCore {
     friend XxGC;
 private:
+    XxIntFontCommon *IntGetFont (EzString Name, int Size);
+
     XxIntFontCommon *pCommon;
     Font GetXFont ();
 public:

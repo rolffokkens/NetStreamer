@@ -120,7 +120,7 @@ int main (int argc, char *argv[])
         pTransConnection
             = new NrTransConnSoundDev
                   ( AddrPort, Freq, Description, AddInfo
-                  , SampleRateIdx, Device
+                  , SampleRateIdx, Device, "NrTransmitter"
                   );
         break;
     case ModeStdIn:

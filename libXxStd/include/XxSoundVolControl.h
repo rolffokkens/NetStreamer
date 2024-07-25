@@ -24,9 +24,10 @@ private:
     int      Volume;
     int      MaxLevel;
 protected:
+    EzString AppName;
     EzString AdjustVolume (EzString Data);
 public:
-    XxSoundVolControl (void);
+    XxSoundVolControl (EzString AppName);
 
     virtual ~XxSoundVolControl (void) {};
 

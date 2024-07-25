@@ -18,7 +18,9 @@
 #include "NrNetRadio.h"
 #include "NrComp.h"
 #include "NrDecomp.h"
+/*
 #include "XxSoundDevOSS.h"
+*/
 #include "XxSoundDevPulse.h"
 #include "NrRecPump.h"
 
@@ -31,10 +33,10 @@ class NrRecSoundDev : public XXSOUNDDEV {
 private:
     NrRecConnection *pConnection;
 
-    NrRecSoundDev (NrRecConnection *pConnection, EzString Device);
-
     virtual void IntHandleWrite (void);
 public:
+    NrRecSoundDev (NrRecConnection *pConnection, EzString Device, EzString AppName);
+
     virtual int Open
         (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed);
 };

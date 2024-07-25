@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#include <iostream>
+
 #include "XxBlocker.h"
 #include "XxTimer.h"
 #include "XxApplication.h"
@@ -21,6 +23,8 @@
 #include "XxAutoInit.h"
 
 #include "XxButton.h"
+
+using namespace std;
 
 class XxAppBlocker : public XxBlocker {
 protected:
@@ -40,6 +44,28 @@ public:
 NULLINIT (XxAppBlocker  *pDummyAppBlocker);
 
 static int InitDone = 0;
+static XErrorEvent LastXErrorEvent = {};
+static int XxErrorHandler (Display *d, XErrorEvent *e)
+{
+    LastXErrorEvent = *e;
+    return 0;
+}
+
+static EzString FormatX11Exception (Display *XxDisplay, EzString Message, EzString Subject)
+{
+    char buf[64];
+
+    if (Subject != EzString ("")) {
+        Subject = EzString (" \"") + Subject + EzString ("\"");
+    }
+    XGetErrorText (XxDisplay, LastXErrorEvent.error_code, buf, sizeof(buf));
+    return Message + Subject + EzString (": ") + EzString (buf);
+}
+
+X11Exception::X11Exception (Display *XxDisplay, EzString Message, EzString Subject)
+    : Exception (FormatX11Exception (XxDisplay, Message, Subject))
+{
+}
 
 void XxApplication::Init (void)
 {
@@ -51,6 +77,8 @@ void XxApplication::Init (void)
 
     XxDisplay  = XOpenDisplay  (NULL);
     if (!XxDisplay) throw Exception("Display error: Connection to X server failed");
+
+    XSetErrorHandler(XxErrorHandler);
 
     XxScreen   = DefaultScreen (XxDisplay);
 

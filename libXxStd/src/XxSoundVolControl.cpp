@@ -25,10 +25,11 @@
 
 using namespace std;
 
-XxSoundVolControl::XxSoundVolControl (void)
+XxSoundVolControl::XxSoundVolControl (EzString AppName)
 {
-    Volume   = 65536;
-    MaxLevel = 0;
+    XxSoundVolControl::Volume   = 65536;
+    XxSoundVolControl::MaxLevel = 0;
+    XxSoundVolControl::AppName = AppName;
 };
 
 EzString XxSoundVolControl::AdjustVolume (EzString Data)
