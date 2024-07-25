@@ -13,8 +13,13 @@
 
 #include <X11/Xlib.h>
 
+#include <iostream>
+
 #include "XxFont.h"
 #include "BiLink.h"
+#include "XxApplication.h"
+
+using namespace std;
 
 struct XxIntFontCommon {
     typedef BlSet<XxIntFontCommon> FontCommonSet;
@@ -56,8 +61,7 @@ static EzString GetFullFontName (EzString Name, int Size)
     return RetVal;
 };
 
-static XxIntFontCommon *GetFont
-    (Display *xDisplay, EzString Name, int Size)
+XxIntFontCommon *XxFont::IntGetFont (EzString Name, int Size)
 {
     XxIntFontCommon *pCommon;
 
@@ -65,10 +69,11 @@ static XxIntFontCommon *GetFont
     if (pCommon == NULL) {
         pCommon = new XxIntFontCommon;
 
-        pCommon->xFont = XLoadFont
-            ( xDisplay, GetFullFontName (Name, Size));
+        pCommon->xFont = XLoadFont (GetDisplay (), GetFullFontName (Name, Size));
+        if (!pCommon->xFont) throw X11Exception (GetDisplay (), "XLoadFont error for font", Name);
 
-        pCommon->pFontInfo = XQueryFont (xDisplay, pCommon->xFont);
+        pCommon->pFontInfo = XQueryFont (GetDisplay (), pCommon->xFont);
+        if (!pCommon->pFontInfo) throw X11Exception (GetDisplay (), "XQueryFont error for font", Name);
         pCommon->Name     = Name;
         pCommon->Size     = Size;
         pCommon->RefCount = 0;
@@ -106,7 +111,7 @@ Font XxFont::GetXFont ()
 XxFont::XxFont (EzString Name, int Size)
     : XxCore (0)
 {
-    pCommon = GetFont (GetDisplay (), Name, Size);
+    pCommon = IntGetFont (Name, Size);
 };
 
 XxFont::XxFont (XxFont &xFont)

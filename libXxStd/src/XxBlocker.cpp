@@ -133,10 +133,12 @@ XxBlocker *XxSelector::PrepareFdSets (XxBlocker::XxAction &Action)
             if (rFlag) {
                 tMax = Fd;
                 FD_SET (tMax, &sRead);
+                FD_SET (tMax, &sExc);
             };
             if (wFlag) {
                 tMax = Fd;
                 FD_SET (tMax, &sWrite);
+                FD_SET (tMax, &sExc);
             };
         };
         if (tMax > sMax) sMax = tMax;
@@ -186,8 +188,9 @@ XxBlocker *XxSelector::Select (int mSec, XxBlocker::XxAction &Action)
         if (pSock->GetStatus () == XxBlocker::StatOpen) {
             Fd  = pSock->GetFd ();
             pSock->GetRWFlags (rFlag, wFlag);
-            rFlag &= (FD_ISSET (Fd, &sRead) ? 1 : 0);
-            wFlag &= (FD_ISSET (Fd, &sWrite) ? 1 : 0);
+
+            rFlag &= ((FD_ISSET (Fd, &sExc) || FD_ISSET (Fd, &sRead))  ? 1 : 0);
+            wFlag &= ((FD_ISSET (Fd, &sExc) || FD_ISSET (Fd, &sWrite)) ? 1 : 0);
             wFlag &= !rFlag;
 
             Action = pSock->GetAction (rFlag, wFlag);

@@ -37,13 +37,13 @@ XxBitmap::XxBitmap (EzString Name, int Width, int Height)
     Constr (Width, Height);
 };
 
-XxBitmap::XxBitmap (EzString Name, int Width, int Height, const char *Data)
+XxBitmap::XxBitmap (EzString Name, int Width, int Height, const unsigned char *Data)
     : XxDrawable (Name)
 {
     Pm = XCreateBitmapFromData
              ( GetDisplay ()
              , GetRootWindow ()
-             , Data
+             , (const char *)Data
              , Width, Height
              );
 #   ifdef CRE_TRACE
@@ -76,4 +76,5 @@ XxBitmap &XxBitmap::operator= (const XxBitmap &pixmap)
     Constr (pixmap.Width, pixmap.Height);
     CopyArea (DrawGC, &pixmap, 0, 0, Width, Height, 0, 0);
 cout << "Warning: untested XxBitmap::operator=" << endl;
+    return *this;
 };

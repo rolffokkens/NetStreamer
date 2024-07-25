@@ -112,6 +112,10 @@ The Rpad function:
 
 class EzSubstr;
 
+class EzString;
+
+extern EzString Rpad (EzString s, unsigned int size, char c = ' ');
+
 class EzString {
     friend void EzStringSetTrace (EzString &Str);
     friend class EzSubstr;
@@ -123,7 +127,7 @@ class EzString {
     friend EzString Upper (const EzString &s);
     friend EzString Lower (const EzString &s);
     friend int Instr (const EzString &s1, const EzString &s2);
-    friend EzString Rpad (EzString s, unsigned int size, char c = ' ');
+    friend EzString Rpad (EzString s, unsigned int size, char c);
     friend EzString Remove (const EzString &s1, const EzString &s2);
 private:
     class EzCommon;

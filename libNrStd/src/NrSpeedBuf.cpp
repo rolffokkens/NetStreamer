@@ -13,8 +13,12 @@ static const int Shift1  = 8;
 
 #include <limits.h>
 
+#include <iostream>
+
 #include "EzString.h"
 #include "NrSpeedBuf.h"
+
+using namespace std;
 
 inline void AdjustAvg (int &Avg, int New, int Weight)
 {

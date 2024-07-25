@@ -64,6 +64,7 @@ public:
     int      GetYPos       (void) { return Hints.y;      };
     int      GetHeight     (void) { return Hints.height; };
     int      GetWidth      (void) { return Hints.width;  };
+    int      GetXid        (void) { return Xid;          };
 
     void SetBackground       (XxColor Color);
     void SetBackgroundPixmap (XxPixmap *pPixmap);

@@ -90,7 +90,7 @@
 struct BitmapStruct {
     short Ascii;
     int   Width, Height;
-    char *Data;
+    unsigned char *Data;
 };
 
 #define BMStruct(A,X) \

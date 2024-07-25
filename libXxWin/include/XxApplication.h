@@ -14,6 +14,13 @@
 
 #include "XxCore.h"
 #include "EzString.h"
+#include "Exception.h"
+
+class X11Exception : public Exception {
+public:
+    X11Exception (Display *XxDisplay, EzString Message, EzString Subject);
+    virtual ~X11Exception (void) {};
+};
 
 class XxApplication {
     friend class XxCore;

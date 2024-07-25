@@ -13,6 +13,8 @@
 
 #include "XxPanel.h"
 
+using namespace std;
+
 XxPanel::XxPanel
     ( EzString Name
     , XxWindow *Parent

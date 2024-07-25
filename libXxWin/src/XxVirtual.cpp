@@ -13,6 +13,8 @@
 
 #include "XxVirtual.h"
 
+using namespace std;
+
 XxVirtual::XxVirtual
     ( EzString Name
     , XxDrawable *pParent

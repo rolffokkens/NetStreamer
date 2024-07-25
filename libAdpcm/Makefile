@@ -11,8 +11,9 @@
 NR_VERSION = 0.8
 INCLUDE = -Iinclude
 # DEBUG = -g
-# CFLAGS = ${DEBUG} ${INCLUDE} -fno-exceptions -fPIC -O3 -W -DNR_VERSION=\"${NR_VERSION}\"
-CFLAGS = ${DEBUG} ${INCLUDE} -fPIC -O3 -W -DNR_VERSION=\"${NR_VERSION}\"
+# CFLAGS = ${DEBUG} ${INCLUDE} -fno-exceptions -fPIC ${OPTFLAGS} -W -DNR_VERSION=\"${NR_VERSION}\"
+OPTFLAGS = -O3
+CFLAGS =  ${DEBUG} ${INCLUDE} -fPIC ${OPTFLAGS} -W -DNR_VERSION=\"${NR_VERSION}\"
 LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
 SOFLAGS = ${DEBUG} -shared
 MAKEFILE =

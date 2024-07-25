@@ -22,7 +22,7 @@ private:
     int Width, Height;
     Pixmap Pm;
 
-    XxBitmap (EzString Name, Pixmap &) : XxDrawable (Name) { };
+    XxBitmap (EzString Name, unsigned char *) : XxDrawable (Name) { };
 
     void Constr (int Width, int Height);
     void Destr (void);
@@ -31,7 +31,7 @@ private:
 protected:
 public:
     XxBitmap (EzString Name, int Width, int Height);
-    XxBitmap (EzString Name, int Width, int Height, const char *Data);
+    XxBitmap (EzString Name, int Width, int Height, const unsigned char *Data);
     XxBitmap (EzString Name, const XxBitmap &pixmap);
 
     virtual ~XxBitmap (void);

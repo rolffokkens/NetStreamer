@@ -32,7 +32,6 @@
 #include "XxLcdScrollDisplay.h"
 #include "XxFlashLight.h"
 #include "XxTimer.h"
-#include "XxMixer.h"
 #include "Nr8Log.h"
 #include "NrGraphicAnalyzer.h"
 #include "NrReceiver.h"
@@ -205,7 +204,7 @@ struct BitmapStruct {
 
 #define BMStruct(X) \
 {NrP ## X ## _width,  NrP ## X ## _height, \
- NrP ## X ## _bits}
+ (char *)(NrP ## X ## _bits)}
 
 static BitmapStruct PresetBitMapData [pButtonCount] = {
     BMStruct (1)
@@ -430,9 +429,8 @@ class NrRecFrontend : public XxWindow, public NrRecConnection {
     class TuneDownButton;
     class RecordButton;
     class MuteButton;
-    class VolMixer;
-    class VolUpButton;;
-    class VolDownButton;;
+    class VolUpButton;
+    class VolDownButton;
     class MemoryButton;
     class PresetButton;
 
@@ -440,9 +438,8 @@ class NrRecFrontend : public XxWindow, public NrRecConnection {
     friend TuneDownButton;
     friend RecordButton;
     friend MuteButton;
-    friend VolMixer;
-    friend VolUpButton;;
-    friend VolDownButton;;
+    friend VolUpButton;
+    friend VolDownButton;
     friend MemoryButton;
     friend PresetButton;
 private:
@@ -466,17 +463,7 @@ private:
     void IntTuneUp   (void);
     void IntTuneDown (void);
 
-    class VolMixer : public XxMixer {
-    private:
-        NrRecFrontend *pParent;
-    protected:
-        void HandleVolume (char lVolume, char rVolume);
-    public:
-        VolMixer (NrRecFrontend *pParent) : XxMixer (200) {
-            VolMixer::pParent = pParent;
-        };
-        virtual ~VolMixer (void) { };
-    };
+    int Volume;
 
     class VolUpButton : public NrPulseButton {
     private:
@@ -651,8 +638,6 @@ private:
         virtual ~RecordButton (void) { };
     };
 
-    VolMixer           Mixer;
-
     XxPanel            ButtonPanel;
 
     FrontendTimer      RefreshTimer;
@@ -708,16 +693,16 @@ protected:
     virtual void HandleMute      (int Flag);
     virtual void HandleMessage (NrMsgCode MsgCode, EzString Id, EzString Mesg);
 public:
-    NrRecFrontend (EzString ConnectString, char SampleRate);
+    NrRecFrontend (EzString ConnectString, char SampleRate, EzString Driver, EzString Device);
     virtual ~NrRecFrontend (void);
 };
 
 static void PutBitMap
-    ( XxDrawable &Drawable
-    , EzString  TmpName
-    , int       XPos,  int YPos
-    , int       Width, int Height
-    , char     *Bits
+    ( XxDrawable     &Drawable
+    , EzString      TmpName
+    , int           XPos,  int YPos
+    , int           Width, int Height
+    , unsigned char *Bits
     )
 {
     XxGC     TmpGC;
@@ -730,7 +715,7 @@ static void PutBitMap
 };
 
 
-NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
+NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate, EzString Driver, EzString Device)
     : XxWindow ( "NrRecFrontend", NULL, 100, 100
                , NrRecFrontendWidth, NrRecFrontendHeight
                , EzString ("NetStreamer ") + EzString (NR_VERSION)
@@ -740,7 +725,7 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
                   , ButtonPanelWidth, ButtonPanelHeight
                   )
     , NrRecConnection
-                  ( 0, SampleRate
+                  ( 0, SampleRate, Driver, Device
                   , EzString ("NrRecFrontend ") + EzString (NR_VERSION)
                   )
     , tUpButton   (&ButtonPanel, this, tUpButtonPosX,   tUpButtonPosY  )
@@ -817,11 +802,10 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
                , XxRed4, XxRed1, XxBlack
                , 500
                )
-    , Mixer    ( this
-               )
 {
     RecFlag   = 0;
     CurPreset = 0;
+    Volume    = 80;
 
     if (!Connect (ConnectString)) {
         cerr << "Cannot Connect to " << ConnectString << endl;
@@ -842,7 +826,7 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
                     , VolMeterPosY + 4
                     , PresetBitMapData[i].Width
                     , PresetBitMapData[i].Height
-                    , PresetBitMapData[i].Data
+                    , (unsigned char *)PresetBitMapData[i].Data
                     , XxRed4, XxRed1, XxBlack
                     );
         };
@@ -954,6 +938,8 @@ NrRecFrontend::NrRecFrontend (EzString ConnectString, char SampleRate)
 
     SetBackground (XxGray1); // qqqq
 
+    VolMeter.SetCurVal (Volume);
+
     SetMute (0);
 };
 
@@ -980,7 +966,6 @@ void NrRecFrontend::SetMessage (EzString Mesg)
         UpdateInfoDisplay ();
     };
 };
-
 
 void NrRecFrontend::HandleMissData (int Flag)
 {
@@ -1052,15 +1037,12 @@ static int TmpCurVal   = 0;
 
 void NrRecFrontend::DoVolAdjust (int AdjVal)
 {
-    char lVol, rVol;
+    Volume += AdjVal;
+    if (Volume < 0) Volume = 0;
+    if (Volume > 99) Volume = 99;
 
-    Mixer.GetVolume (lVol, rVol);
-
-    if (lVol > rVol) rVol = lVol;
-
-    rVol += AdjVal;
-
-    Mixer.SetVolume (rVol, rVol);
+    SetVolume (1000 + (Volume * Volume * 64535) / 10000);
+    VolMeter.SetCurVal (Volume);
 };
 
 void NrRecFrontend::DoRecord (void)
@@ -1131,11 +1113,6 @@ void NrRecFrontend::RefreshMeters   (void)
     AdjustMeter.SetCurVal (TmpAdjust);
 
     Analyzer.Refresh (MsCurTime);
-};
-
-void NrRecFrontend::VolMixer::HandleVolume (char lVolume, char rVolume)
-{
-    pParent->VolMeter.SetCurVal (lVolume);
 };
 
 template <>
@@ -1214,14 +1191,19 @@ int main (int argc, char *argv[])
 {
     int      RetVal;
 
-    {
-        EzString ConnectString, SampleRate;
+    try {
+        EzString ConnectString, SampleRate, Driver, Device;
 
-        ConnectString = EzString (argc < 2 ? ":8888" : argv[1]);
+        ConnectString = EzString (argc < 2 ? ":8888"    : argv[1]);
+        Driver        = EzString (argc < 3 ? "Oss"      : argv[2]);
+        Device        = EzString (argc < 4 ? "/dev/dsp" : argv[3]);
 
-        new NrRecFrontend (ConnectString, 1);
+        new NrRecFrontend (ConnectString, 1, Driver, Device);
 
         RetVal = XxApplication::MainLoop ();
+    } catch (Exception e) {
+        cerr << e.GetText() << endl;
+	RetVal = 1;
     };
 
     return RetVal;

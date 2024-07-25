@@ -18,24 +18,25 @@
 #include "NrNetRadio.h"
 #include "NrComp.h"
 #include "NrDecomp.h"
+/*
 #include "XxSoundDevOSS.h"
+*/
+#include "XxSoundDevPulse.h"
 #include "NrRecPump.h"
 
 class NrRecConnection;
 
-class NrRecSoundDev : public XxSoundDevOSS {
+#define XXSOUNDDEV XxSoundDevPulse
+
+class NrRecSoundDev : public XXSOUNDDEV {
     friend NrRecConnection;
 private:
     NrRecConnection *pConnection;
 
-    NrRecSoundDev (NrRecConnection *pConnection);
-
     virtual void IntHandleWrite (void);
 public:
-    virtual void GetRWFlags (int &rFlag, int &wFlag) {
-        rFlag = 1;
-        wFlag = 1;
-    };
+    NrRecSoundDev (NrRecConnection *pConnection, EzString Device, EzString AppName);
+
     virtual int Open
         (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed);
 };
@@ -123,8 +124,11 @@ protected:
     virtual void HandlePrepare   (int Flag);
     virtual void HandleExpansion (int Expansion);
     virtual void HandleMute      (int Flag);
+
+    int GetVolume (void) { return SoundDev.GetVolume (); };
+    void SetVolume (int Volume) { SoundDev.SetVolume (Volume); };
 public:
-    NrRecConnection (int Freq, char SampleRate, EzString AddInfo);
+    NrRecConnection (int Freq, char SampleRate, EzString Driver, EzString Device, EzString AddInfo);
 
     virtual ~NrRecConnection (void) { };
 

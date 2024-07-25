@@ -18,7 +18,8 @@ NR_VERSION = 0.12
 INCLUDE = -Iinclude -I../libFksUtil/include -I../libXxStd/include \
 -I/usr/include/g++/
 # DEBUG = -g
-CFLAGS = ${DEBUG} ${INCLUDE} -fPIC -O3 -W -DNR_VERSION=\"${NR_VERSION}\"
+OPTFLAGS = -O3
+CFLAGS =  ${DEBUG} ${INCLUDE} -fPIC ${OPTFLAGS} -W -DNR_VERSION=\"${NR_VERSION}\"
 LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
 SOFLAGS = ${DEBUG} -shared
 MAKEFILE =

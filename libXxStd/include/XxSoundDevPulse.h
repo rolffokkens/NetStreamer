@@ -1,5 +1,5 @@
 /*
- * file: XxSoundDevOSS.h
+ * file: XxSoundDevPulse.h
  *
  * This file is part of the XxStdLib library which is developed to support
  * the development of NetStreamer. This file is distributed under the
@@ -9,17 +9,17 @@
  *
  */
 
-#ifndef H_XX_SOUNDDEVOSS
+#ifndef H_XX_SOUNDDEVPULSE
 
-#define H_XX_SOUNDDEVOSS
+#define H_XX_SOUNDDEVPULSE
+
+#include <unistd.h>
 
 #ifndef __sparc__
 
-#include "XxStream.h"
-
 #include "XxSoundVolControl.h"
 
-class XxSoundDevOSS : public XxSoundVolControl {
+class XxSoundDevPulse : public XxSoundVolControl {
 private:
     MODE_RW  ModeRW;
     int      IntBufSize;
@@ -28,6 +28,10 @@ private:
     int      IntStereo;
     int      IntSampleBytes;
     EzString Device;
+    pid_t    ChildPID;
+    pid_t    StatusFd;
+    int      Latency;
+    int      PipeLatency;
 
     int      Deliv16;
     int      DelivStereo;
@@ -36,30 +40,26 @@ private:
     int      EmulStereo;
     int      EmulMono;
 
-    int SetSampleSize (int Fd, int SampleSize);
-    int SetStereo     (int Fd, int StereoFlag);
-    int SetSpeed      (int Fd, int SampleRate);
-
     void IntClose (void);
+    int ChildGone (void);
 protected:
     virtual int GetWriteChunkSize (EzString Data);
 
     virtual EzString ProcessReadData  (EzString Data);
     virtual EzString ProcessWriteData  (EzString Data);
 
+    virtual void Write (EzString Data);
+
     virtual void Close (void);
 public:
-    XxSoundDevOSS (EzString Device, EzString AppName);
+    XxSoundDevPulse (EzString Device, EzString AppName);
 
-    virtual ~XxSoundDevOSS (void);
+    virtual ~XxSoundDevPulse (void);
 
-    virtual void GetRWFlags (int &rFlag, int &wFlag) {
-        rFlag = 1;
-        wFlag = 1;
-    };
+    virtual void GetRWFlags (int &rFlag, int &wFlag);
 
     virtual int Open
-        (MODE_RW ModeRW, int SampleSize, int StereoFlag, int Speed);
+        (MODE_RW ModeRW, int SampleSize, int StereoFlag, int SampleRate);
 
     MODE_RW GetOpenMode (void) { return ModeRW; };
 
@@ -69,7 +69,7 @@ public:
 
     virtual int GetIntOutDelay (void);
 
-    int GetMaxLevel (void);
+    virtual int IsOpen (void) { return !ChildGone(); };
 };
 
 #endif

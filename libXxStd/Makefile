@@ -24,14 +24,15 @@
 NR_VERSION = 0.13
 INCLUDE = -Iinclude -I../libFksUtil/include -I/usr/include/g++/
 # DEBUG = -g
-CFLAGS = ${DEBUG} ${INCLUDE} -fPIC -O3 -W -DNR_VERSION=\"${NR_VERSION}\"
-LDFLAGS = ${DEBUG} -Xlinker -rpath -Xlinker .
-SOFLAGS = ${DEBUG} -shared
+OPTFLAGS = -O3
+CFLAGS =  ${DEBUG} ${INCLUDE} -fPIC ${OPTFLAGS} -W -DNR_VERSION=\"${NR_VERSION}\"
+LDFLAGS = ${DEBUG} -lpulse -lpulse-simple -Xlinker -rpath -Xlinker .
+SOFLAGS = ${DEBUG} -shared -lpulse -lpulse-simple
 MAKEFILE =
 
 XXSTDOBJS = \
-	src/XxSoundDevOSS.o src/XxSocket.o src/XxStream.o src/XxBlocker.o \
-	src/XxMixer.o src/XxTimer.o src/XxBase.o src/XxSerial.o src/XxStdio.o
+	src/XxSoundDevOSS.o src/XxSoundDevPulse.o src/XxSocket.o src/XxStream.o src/XxBlocker.o \
+	src/XxMixerOSS.o src/XxTimer.o src/XxBase.o src/XxSerial.o src/XxStdio.o src/XxSoundVolControl.o
 
 .SUFFIXES:
 .SUFFIXES: .cpp $(SUFFIXES)
