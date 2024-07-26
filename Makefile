@@ -66,7 +66,7 @@ DEBUG= -g
 # DEBUG=
 OPTFLAGS=-O0
 
-NR_VERSION = 0.18
+NR_VERSION = 0.19
 INCLUDE = -I/usr/include/g++ -IlibXxWin/include -IlibXxStd/include \
 	-IlibFksUtil/include -IlibNrWin/include -IlibNrStd/include \
 	-IlibAdpcm/include
