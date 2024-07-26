@@ -23,6 +23,9 @@ using namespace std;
 
 int XxListener::CheckListen (const XxSocketAddr &Addr)
 {
+    int reuse = 1;
+    int result = setsockopt(GetFd (), SOL_SOCKET, SO_REUSEADDR, (void *)&reuse, sizeof(reuse));
+
     if (!SetMyAddr (Addr)) return 0;
 
     listen (GetFd (), 5);
