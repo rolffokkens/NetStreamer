@@ -10,8 +10,11 @@
 
 #include <dirent.h>
 #include <fcntl.h>
+#include <iostream>
 
 #include "NrTransStdIn.h"
+
+using namespace std;
 
 static int GetTimerDelay (int SampleRate)
 {
@@ -19,7 +22,7 @@ static int GetTimerDelay (int SampleRate)
 };
 
 NrTransStdIn::NrTransStdIn
-    (NrTransConnection *pConnection, char SampleRate, int InSampleRate)
+    (NrTransConnection *pConnection, char SampleRate, int InSampleRate, int DataID, int MetaDataID)
     : NrTransSoundSource (pConnection)
     , Timer (this, GetTimerDelay (SampleRate))
     , Comp (3)
@@ -28,36 +31,65 @@ NrTransStdIn::NrTransStdIn
     NrTransStdIn::AvailToRead = 0;
     NrTransStdIn::MuteFlag    = 1;
     NrTransStdIn::SampleRate  = SampleRate;
+    NrTransStdIn::DataID      = DataID;
+    NrTransStdIn::MetaDataID  = MetaDataID;
+cerr << "wah:" << DataID << endl;
 };
 
 NrTransStdIn::~NrTransStdIn (void)
 {
 };
 
+EzString NrTransStdIn::ExtractAudio (EzString Data)
+{
+    EzString Temp, Block;
+    int len, id;
+    if (DataID == -1) return Data;
+
+    DataBuffer += Data;
+    for (;;) {
+        Block = "";
+        if (DataBuffer.Length () < (unsigned int)2) break;
+        len = (unsigned char)DataBuffer[1];
+        if (!len) len = 256;
+        if (DataBuffer.Length () < (unsigned int)(len + 2)) break;
+        id = (unsigned char)DataBuffer[0];
+        Block = Substr (DataBuffer, 2, len);
+        DataBuffer = Substr (DataBuffer, 2 + len);
+        if (id == DataID) Temp += Block;
+	if (id == MetaDataID) HandleInfo (Block);
+    }
+    Data = Temp;
+
+    return Data;
+}
+
 EzString NrTransStdIn::ProcessReadData (EzString Data)
 {
-    EzString     Temp, RetVal;
+    EzString     RetVal;
     const short *pIn, *pInStart, *pInLast;
     short       *pOut;
     int          InLen;
 
-    Temp = XxStdIn::ProcessReadData (Data);
+    Data = XxStdIn::ProcessReadData (Data);
 
-    BlockBuffer += Adjust.ProcessData (Temp);
+    Data = ExtractAudio (Data);
+
+    BlockBuffer += Adjust.ProcessData (Data);
 
     if (BlockBuffer.Length () > 2048) {
-        Temp        = Substr (BlockBuffer, 0, 2048);
+        Data        = Substr (BlockBuffer, 0, 2048);
         BlockBuffer = Substr (BlockBuffer, 2048);
     } else {
-        Temp = "";
+        Data = "";
     };
 
-    AvailToRead -= Temp.Length ();
+    AvailToRead -= Data.Length ();
 
     if (MuteFlag) {
         RetVal = "";
     } else {
-        RetVal = Comp.Compress (Temp);
+        RetVal = Comp.Compress (Data);
     };
 
     return RetVal;
@@ -100,11 +132,12 @@ NrTransConnStdIn::NrTransConnStdIn
     , int Freq, EzString Description
     , EzString AddInfo
     , char SampleRate, int InSampleRate
+    , int DataID, int MetaDataID
     )
     : NrTransConnection
          ( AddrPort, Freq, Description
          , AddInfo
-         , new NrTransStdIn (this, SampleRate, InSampleRate)
+         , new NrTransStdIn (this, SampleRate, InSampleRate, DataID, MetaDataID)
          , SampleRate
          )
 {

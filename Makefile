@@ -79,7 +79,7 @@ MAKEFILE =
 EXECS = libFksUtil.so libAdpcm.so libXxStd.so libXxWin.so libNrStd.so \
 	libNrWin.so NrRecFrontendSh NrServerSh NrTransmitterSh \
 	NrReceiverSh NrReceiver NrRecFrontend NrTransmitter NrServer \
-	NrEncoder NrEncoderSh
+	NrEncoder NrEncoderSh NrBlockEncode
 
 # X11 = -lX11 -lXpm
 X11 = -lX11 -lXpm
@@ -103,14 +103,14 @@ SUBDIRS  = libAdpcm libFksUtil libXxStd libXxWin libNrStd libNrWin
 EXECS = libFksUtil.so libAdpcm.so libXxStd.so libXxWin.so libNrStd.so \
 	libNrWin.so NrRecFrontendSh NrServerSh NrTransmitterSh \
 	NrReceiverSh NrReceiver NrRecFrontend NrTransmitter NrServer \
-	NrEncoder NrEncoderSh
+	NrEncoder NrEncoderSh NrBlockEncode
 
 all:	.depend SubDirs socktest xtestSh xtest $(EXECS)
 
 SubDirs:
 	mkdir -p lib
 	for i in $(SUBDIRS); do ln -s $$i/lib/$$i.so .; test 0; done
-	for i in $(SUBDIRS); do DEBUG=${DEBUG} make -C $$i OPTFLAGS=${OPTFLAGS}; done
+	for i in $(SUBDIRS); do make -C $$i DEBUG=${DEBUG} OPTFLAGS=${OPTFLAGS} NR_VERSION=${NR_VERSION}; done
 
 archive:
 	strip $(EXECS)
@@ -160,28 +160,22 @@ depend:
 	gcc -M ${INCLUDE} `ls *.cpp` > .depend
 	@echo "Retrying Now"
 
-libFksUtil.so:
-	DEBUG=${DEBUG} make -C libFksUtil
+libFksUtil.so: SubDirs
 	ln -s libFksUtil/lib/libFksUtil.so .; test 0
 
-libAdpcm.so:
-	DEBUG=${DEBUG} make -C libAdpcm
+libAdpcm.so: SubDirs
 	ln -s libAdpcm/lib/libAdpcm.so .; test 0
 
-libXxStd.so:
-	DEBUG=${DEBUG} make -C libXxStd
+libXxStd.so: SubDirs
 	ln -s libXxStd/lib/libXxStd.so .; test 0
 
-libXxWin.so:
-	DEBUG=${DEBUG} make -C libXxWin
+libXxWin.so: SubDirs
 	ln -s libXxWin/lib/libXxWin.so .; test 0
 
-libNrStd.so:
-	DEBUG=${DEBUG} make -C libNrStd
+libNrStd.so: SubDirs
 	ln -s libNrStd/lib/libNrStd.so .; test 0
 
-libNrWin.so:
-	DEBUG=${DEBUG} make -C libNrWin
+libNrWin.so: SubDirs
 	ln -s libNrWin/lib/libNrWin.so .; test 0
 
 NrDll.so: ${MAKEFILE} \
@@ -191,13 +185,13 @@ NrDll.so: ${MAKEFILE} \
 
 NrReceiver: ${MAKEFILE} \
 	NrRecMain.o ${STATNRSTDLIB}
-	${LD} ${LDFLAGS} -o NrReceiver \
- 	NrRecMain.o ${STATNRSTDLIB}
+	${LD} -o NrReceiver \
+	NrRecMain.o ${STATNRSTDLIB} ${LDFLAGS}
 
 NrReceiverSh: ${MAKEFILE} \
 	NrRecMain.o
-	${LD} ${LDFLAGS} -o NrReceiverSh \
- 	NrRecMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
+	${LD} -o NrReceiverSh \
+	NrRecMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so ${LDFLAGS}
 
 NrTransmitter: ${MAKEFILE} \
 	NrTransMain.o ${STATNRSTDLIB}
@@ -206,8 +200,8 @@ NrTransmitter: ${MAKEFILE} \
 
 NrTransmitterSh: ${MAKEFILE} \
 	NrTransMain.o
-	${LD} ${LDFLAGS} -o NrTransmitterSh \
- 	NrTransMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
+	${LD} -o NrTransmitterSh \
+	NrTransMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so ${LDFLAGS}
 
 NrEncoder: ${MAKEFILE} \
 	NrEncodeMain.o ${STATNRSTDLIB}
@@ -216,18 +210,18 @@ NrEncoder: ${MAKEFILE} \
 
 NrEncoderSh: ${MAKEFILE} \
 	NrEncodeMain.o
-	${LD} ${LDFLAGS} -o NrEncoderSh \
- 	NrEncodeMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
+	${LD} -o NrEncoderSh \
+	NrEncodeMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so ${LDFLAGS}
 
 DllTest: ${MAKEFILE} \
 	DllTest.o
 	${LD} ${LDFLAGS} -o DllTest \
- 	DllTest.o NrDll.so
+	DllTest.o NrDll.so
 
 NrServerSh: ${MAKEFILE} \
 	NrServerMain.o
-	${LD} ${LDFLAGS} -o NrServerSh \
- 	NrServerMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so
+	${LD} -o NrServerSh \
+	NrServerMain.o libXxStd.so libNrStd.so libFksUtil.so libAdpcm.so ${LDFLAGS}
 
 NrServer: ${MAKEFILE} \
 	NrServerMain.o ${STATNRSTDLIB}
@@ -246,17 +240,19 @@ xtest: ${MAKEFILE} \
 
 xtestSh: ${MAKEFILE} \
 	xtest.o xtest-xpm.o
-	${LD} ${LDFLAGS} -o xtestSh \
-	xtest.o xtest-xpm.o libXxWin.so libXxStd.so libFksUtil.so
+	${LD} -o xtestSh \
+	xtest.o xtest-xpm.o libXxWin.so libXxStd.so libFksUtil.so ${LDFLAGS}
 
 NrRecFrontend: ${MAKEFILE} \
 	NrRecFrontend.o ${STATNRWINLIB}
-	${LD} ${LDFLAGS} -o NrRecFrontend \
-	NrRecFrontend.o ${STATNRWINLIB} ${X11}
+	${LD} -o NrRecFrontend \
+	NrRecFrontend.o ${STATNRWINLIB} ${X11} ${LDFLAGS}
 
 NrRecFrontendSh: ${MAKEFILE} \
 	NrRecFrontend.o
-	${LD} ${LDFLAGS} -o NrRecFrontendSh NrRecFrontend.o libNrWin.so libXxWin.so libNrStd.so libXxStd.so libAdpcm.so libFksUtil.so
+	${LD} -o NrRecFrontendSh NrRecFrontend.o libNrWin.so libXxWin.so libNrStd.so libXxStd.so libAdpcm.so libFksUtil.so ${LDFLAGS}
+
+# NrBlockEncode: NrBlockEncode.o
 
 ifneq ($(MAKECMDGOALS),clean)
 include .depend

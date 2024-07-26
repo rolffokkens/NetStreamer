@@ -18,6 +18,9 @@
 #include "NrTransStdIn.h"
 #include "XxSoundDevOSS.h"
 
+#define XX_DATAID 1
+#define XX_METADATAID 2
+
 using namespace std;
 
 static void ShowArgErrorMessage (EzString ProgName)
@@ -128,6 +131,7 @@ int main (int argc, char *argv[])
             = new NrTransConnStdIn
                   ( AddrPort, Freq, Description, AddInfo
                   , SampleRateIdx, InSampleRate
+                  , XX_DATAID, XX_METADATAID
                   );
         break;
     default:

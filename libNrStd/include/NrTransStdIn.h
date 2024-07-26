@@ -23,13 +23,14 @@
 #include "NrTransmitter.h"
 
 class NrTransStdIn : public NrTransSoundSource
-                   , public virtual XxStdIn {
+                   , virtual public XxStdIn {
     typedef tXxTimer<NrTransStdIn> TransStdInTimer;
 
     friend class tXxTimer<NrTransStdIn>;
 private:
     NrRateAdjust    Adjust;
 
+    EzString        DataBuffer;
     EzString        BlockBuffer;
 
     int             AvailToRead;
@@ -38,8 +39,11 @@ private:
     int             MuteFlag;
     NrComp          Comp;
     char            SampleRate;
+    int             DataID;
+    int             MetaDataID;
 
     void HandleTimeOut (int Count);
+    EzString ExtractAudio (EzString Data);
 protected:
     virtual EzString ProcessReadData  (EzString Data);
 
@@ -48,7 +52,7 @@ protected:
     virtual void OnDisconnect (void);
 public:
     NrTransStdIn
-        (NrTransConnection *pConnection, char SampleRate, int InSampleRate);
+        (NrTransConnection *pConnection, char SampleRate, int InSampleRate, int DataID, int MetaDataID);
     virtual ~NrTransStdIn (void);
 
     virtual void GetRWFlags (int &rFlag, int &wFlag);
@@ -62,6 +66,7 @@ public:
     NrTransConnStdIn
         ( EzString AddrPort, int Freq, EzString Description
         , EzString AddInfo, char SampleRate, int InSampleRate
+	, int DataID = -1, int MetaDataID = -1
         );
     virtual ~NrTransConnStdIn (void);
 };
